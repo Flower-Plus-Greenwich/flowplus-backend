@@ -28,6 +28,12 @@ public class UserProfile extends BaseSoftDeleteEntity<Long> {
         return userId;
     }
 
+    @Column(name = "first_name", length = 50)
+    private String firstName;
+
+    @Column(name = "last_name", length = 50)
+    private String lastName;
+
     @Column(name = "full_name", nullable = false, length = CommonConfig.MAX_LENGTH_DISPLAY_NAME)
     private String fullName;
 

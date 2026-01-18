@@ -16,6 +16,7 @@ import com.greenwich.flowerplus.service.AuthService;
 import com.greenwich.flowerplus.service.RefreshTokenService;
 import com.greenwich.flowerplus.service.TokenBlacklistService;
 import com.greenwich.flowerplus.service.TokenService;
+import com.greenwich.flowerplus.service.validator.AccountAuthenticationValidator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -87,7 +88,21 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse register(RegisterRequest request) {
         // Validate password match
         if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new AppException(ErrorCode.INVALID_CONFIRM_PASSWORD);
+        }
+
+        // Validate format
+        if (!AccountAuthenticationValidator.isValidEmail(request.getEmail())) {
+            throw new AppException(ErrorCode.INVALID_EMAIL_FORMAT);
+        }
+        
+        if (!AccountAuthenticationValidator.isValidPassword(request.getPassword())) {
             throw new AppException(ErrorCode.INVALID_PASSWORD_FORMAT);
+        }
+        
+        if (!AccountAuthenticationValidator.isValidName(request.getFirstName()) || 
+            !AccountAuthenticationValidator.isValidName(request.getLastName())) {
+            throw new AppException(ErrorCode.INVALID_NAME_FORMAT);
         }
 
         // Check if email already exists
@@ -110,8 +125,15 @@ public class AuthServiceImpl implements AuthService {
 
         // Create user profile with name
         String fullName = (request.getFirstName() + " " + request.getLastName()).trim();
+
+        if (!AccountAuthenticationValidator.isValidDisplayName(fullName)) {
+             throw new AppException(ErrorCode.INVALID_DISPLAY_NAME);
+        }
+
         UserProfile profile = UserProfile.builder()
             .userId(user.getId())
+            .firstName(request.getFirstName())
+            .lastName(request.getLastName())
             .fullName(fullName)
             .build();
         userProfileRepository.save(profile);

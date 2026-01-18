@@ -73,9 +73,13 @@ public enum ErrorCode {
     USER_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER_002", "User already exists"),
 
     // Validation Input
-    INVALID_PASSWORD_FORMAT(HttpStatus.BAD_REQUEST, "USER_003", "Invalid password format"),
-    INVALID_DISPLAY_NAME(HttpStatus.BAD_REQUEST, "USER_004", "Invalid display name"),
-    INVALID_DOB(HttpStatus.BAD_REQUEST, "USER_005", "Invalid date of birth"),
+    INVALID_PASSWORD_FORMAT(HttpStatus.BAD_REQUEST, "USER_003", "Password must be at least 10 characters long and include uppercase, lowercase, number, and special character"),
+    INVALID_CONFIRM_PASSWORD(HttpStatus.BAD_REQUEST, "USER_004", "Password does not match with confirm password"),
+    INVALID_DISPLAY_NAME(HttpStatus.BAD_REQUEST, "USER_004", "Display name contains forbidden words or exceeds length limit"),
+    INVALID_DOB(HttpStatus.BAD_REQUEST, "USER_005", "Date of birth must be a past date"),
+    INVALID_EMAIL_FORMAT(HttpStatus.BAD_REQUEST, "USER_008", "Email must be a valid email address format"),
+    INVALID_PHONE_FORMAT(HttpStatus.BAD_REQUEST, "USER_009", "Phone number must be a valid format"),
+    INVALID_NAME_FORMAT(HttpStatus.BAD_REQUEST, "USER_010", "Name contains invalid characters or forbidden words"),
 
     // Logic Reset Password
     INVALID_RESET_TOKEN(HttpStatus.BAD_REQUEST, "USER_006", "Invalid reset token"),
