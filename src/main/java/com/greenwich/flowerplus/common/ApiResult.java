@@ -3,12 +3,14 @@ package com.greenwich.flowerplus.common;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 
 
 @Getter
 @Builder
+@ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResult<T> {
 
@@ -19,6 +21,7 @@ public class ApiResult<T> {
 
     @Getter
     @Builder
+    @ToString
     public static class Pagination {
         private int page;
         private int size;
@@ -28,6 +31,7 @@ public class ApiResult<T> {
 
     @Getter
     @Builder
+    @ToString
     public static class ErrorDetail {
         private String code;
         private String message;

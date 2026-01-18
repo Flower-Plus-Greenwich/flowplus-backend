@@ -25,11 +25,11 @@ public class TokenCleanupJob {
         // 1. Đã Revoked HOẶC Đã Hết hạn
         // 2. VÀ thời điểm tạo/hết hạn đã trôi qua 7 ngày (Retention Period)
         String sql = """
-            DELETE FROM auth.refresh_tokens\s
+            DELETE FROM refresh_tokens\s
             WHERE (revoked = true OR expiry_date < NOW())
             AND expiry_date < NOW() - INTERVAL '7 days'
             AND id IN (
-                SELECT id FROM auth.refresh_tokens\s
+                SELECT id FROM refresh_tokens\s
                 WHERE (revoked = true OR expiry_date < NOW())
                 AND expiry_date < NOW() - INTERVAL '7 days'
                 LIMIT 1000

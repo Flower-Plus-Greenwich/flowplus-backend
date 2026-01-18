@@ -22,8 +22,8 @@ public class SchedulerConfig {
     public LockProvider lockProvider(JdbcTemplate jdbcTemplate) {
         return new JdbcTemplateLockProvider(
                 JdbcTemplateLockProvider.Configuration.builder()
-                        .withJdbcTemplate(new JdbcTemplate((DataSource) jdbcTemplate))
-                        .usingDbTime() // Dùng giờ của DB để đồng bộ
+                        .withJdbcTemplate(jdbcTemplate)
+                        .usingDbTime()
                         .build()
         );
     }

@@ -134,26 +134,9 @@ public class TokenServiceImpl implements TokenService {
             Date expirationTime = claims.getExpirationTime();
             String username = claims.getSubject(); // This is userId (TSID)
             
-            // Allow matching against Username OR ID if UserDetails allows
-            // userDetails.getUsername() currently returns... let's check SecurityUserDetails later.
-            // Usually it returns the identifier used to load.
-            
-            String dbUsername = userDetails.getUsername(); // This might be email or ID depending on how it was loaded.
-             
-            // Refined check: userDetails might return email, but token subject is ID.
-            // Or vice versa.
-            // Previous code: boolean isUsernameMatch = username.equals(dbUsername);
-            // I should ensure consistency. 
-            // In generateAccessToken(UserAccount), subject is userAccount.getId().
-            // In UserDetailsServiceImpl, if input is numeric, it loads by ID.
+            String dbUsername = userDetails.getUsername(); 
             
             boolean isUsernameMatch = username.equals(dbUsername);
-            
-            // Also check against email if ID doesn't match, or vice versa if we can. 
-            // But for now, let's keep it simple. If subject is ID, userDetails.getUsername() should be ID.
-            // UserDetailsServiceImpl sets username to userAccount.getId() usually? 
-            // Actually UserDetails usually returns username/email. 
-            // I will check SecurityUserDetails.
             
             if (!isUsernameMatch) log.debug("isValid failed: Subject mismatch. Token: {}, User: {}", username, dbUsername);
 

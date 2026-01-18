@@ -41,16 +41,16 @@ spring:
 
   flyway:
     enabled: true
-    # Tự động tạo bảng lịch sử flyway_schema_history nếu chưa có
+    # Automatically create flyway_schema_history table if it doesn't exist
     baseline-on-migrate: true
-    # Đặt version nền tảng là 0 (để tránh lỗi nếu DB đã có dữ liệu từ trước)
+    # Set baseline version to 0 (to avoid errors if DB already has data)
     baseline-version: 0
-    # Đường dẫn chứa file sql (mặc định là db/migration)
+    # Directory containing sql files (default is db/migration)
     locations: classpath:db/migration
-    # (Tùy chọn cho Dev) Cho phép Flyway validate checksum.
-    # Nếu bạn sửa file migration cũ, Flyway sẽ báo lỗi. Set false nếu bạn hay sửa bậy file cũ (không khuyến khích).
+    # (Optional for Dev) Allow Flyway to validate checksum.
+    # If you modify old migration files, Flyway will report error. Set false if you often modify old files (not recommended).
     validate-on-migrate: true
-    # (Tùy chọn) Schema mặc định, thường là public với Postgres
+    # (Optional) Default schema, usually public for Postgres
     default-schema: public
 
   jpa:
@@ -112,8 +112,8 @@ logging:
   level:
     org.hibernate.orm.jdbc.bind: trace
     root: INFO
-    com.greenwich.flowerplus: DEBUG  # In chi tiết log của code
-    #org.hibernate.SQL: DEBUG   # In câu lệnh SQL ra console xem cho sướng
+    com.greenwich.flowerplus: DEBUG  # Print detailed code logs
+    #org.hibernate.SQL: DEBUG   # Print SQL statements to console for convenience
 
 # Swagger (springdoc-openapi)
 springdoc:

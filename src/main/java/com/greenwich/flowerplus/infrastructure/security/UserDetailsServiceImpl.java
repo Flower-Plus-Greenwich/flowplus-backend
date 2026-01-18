@@ -35,15 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             user = userRepository.findById(userId)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found by ID: " + userId));
         } else {
-            user = userRepository.findByEmail(identifier) // Assuming identifier is email if not TSID. Or findByIdentifier if exists.
-                    // The original code used findByIdentifier, checking if that exists in repo.
-                    // Original code: userRepository.findByIdentifier(identifier)
-                    // Let's assume it might not exist if it was custom. Standard is findByEmail for login.
-                    // Let's check if findByIdentifier existed in generic repo or custom.
-                    // I'll stick to findByEmail for safety if "findByIdentifier" was custom.
-                    // But wait, user might login with username.
-                    // Let's use findByEmail since standard login is Email + Password usually unless specified.
-                    // Prompt says: "Authenticate user using email + password". So findByEmail is correct!
+            user = userRepository.findByEmail(identifier)
                     .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.INVALID_CREDENTIALS.name()));
         }
 

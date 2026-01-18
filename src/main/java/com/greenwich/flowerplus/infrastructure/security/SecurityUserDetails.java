@@ -38,11 +38,11 @@ public class SecurityUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        // QUAN TRỌNG: dùng Username (hoặc TSID) làm định danh hệ thống
-        // Không dùng email ở đây nữa để tránh rủi ro khi user đổi email
+        // IMPORTANT: Use Username (or TSID) as the system identifier
+        // Do not use email here to avoid risks when the user changes their email
 //        return user.getUsername();
 
-        // Hoặc nếu bạn đã dùng TSID thì:
+        // If using TSID:
         return String.valueOf(user.getId());
     }
 
