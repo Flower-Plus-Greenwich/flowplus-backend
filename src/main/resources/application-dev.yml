@@ -1,0 +1,126 @@
+app:
+  base-url: http://localhost:8080
+  frontend-url: http://localhost:3000
+  db-seeder: true
+  name: FLOWERPLUS
+  tagline: Flower Shop
+  url: https://flowerplus.io.vn
+
+
+
+jwt:
+  key:
+    id: "flowerplus-key-2025"
+    private-path: classpath:certs/private_key.pem
+    public-path: classpath:certs/public_key.pem
+  refresh:
+    expiration: 2592000000 # 30 days in milliseconds
+
+cloudinary:
+  cloudName: ${CLOUDINARY_CLOUD_NAME}
+  apiKey: ${CLOUDINARY_API_KEY}
+  apiSecret: ${CLOUDINARY_API_SECRET}
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  jackson:
+    time-zone: UTC
+    default-property-inclusion: non_null
+
+  web:
+    resources:
+      add-mappings: false
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/flowerplus_db?stringtype=unspecified
+    username: ${POSTGRES_USER:thang}
+    password: ${POSTGRES_PASSWORD:123456}
+
+  flyway:
+    enabled: true
+    # Tự động tạo bảng lịch sử flyway_schema_history nếu chưa có
+    baseline-on-migrate: true
+    # Đặt version nền tảng là 0 (để tránh lỗi nếu DB đã có dữ liệu từ trước)
+    baseline-version: 0
+    # Đường dẫn chứa file sql (mặc định là db/migration)
+    locations: classpath:db/migration
+    # (Tùy chọn cho Dev) Cho phép Flyway validate checksum.
+    # Nếu bạn sửa file migration cũ, Flyway sẽ báo lỗi. Set false nếu bạn hay sửa bậy file cũ (không khuyến khích).
+    validate-on-migrate: true
+    # (Tùy chọn) Schema mặc định, thường là public với Postgres
+    default-schema: public
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+
+    show_sql: false
+    hibernate:
+      ddl-auto: none
+
+  mail:
+    host: localhost
+    port: 1025
+    username: "noreply@flowerplus.com"
+    password: ""
+    properties:
+      mail.smtp.auth: false
+      mail.smtp.starttls.enable: false
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      repositories:
+        enabled: false
+
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: openid, profile, email
+            redirect-uri: http://localhost:3000/auth/google-callback
+            authorization-grant-type: authorization_code
+            client-name: Google
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v2/userinfo
+            user-name-attribute: sub
+
+
+
+open:
+  api:
+    serverUrl: http://localhost:8080
+    title: Flower Plus  API (Dev)
+    version: v1.0.0
+    serverName: Flower Plus Backend API
+    description: API documentation for Flower Plus shop ecommerce project.
+
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: trace
+    root: INFO
+    com.greenwich.flowerplus: DEBUG  # In chi tiết log của code
+    #org.hibernate.SQL: DEBUG   # In câu lệnh SQL ra console xem cho sướng
+
+# Swagger (springdoc-openapi)
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+server:
+  port: 8080
