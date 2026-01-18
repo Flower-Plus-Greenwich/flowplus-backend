@@ -22,6 +22,7 @@ public class ApiResult<T> {
     @Getter
     @Builder
     @ToString
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Pagination {
         private int page;
         private int size;
@@ -32,6 +33,7 @@ public class ApiResult<T> {
     @Getter
     @Builder
     @ToString
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class ErrorDetail {
         private String code;
         private String message;
