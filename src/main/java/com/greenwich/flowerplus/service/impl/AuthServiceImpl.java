@@ -8,10 +8,12 @@ import com.greenwich.flowerplus.dto.request.LoginRequest;
 import com.greenwich.flowerplus.dto.request.RegisterRequest;
 import com.greenwich.flowerplus.dto.response.AuthResponse;
 import com.greenwich.flowerplus.entity.RefreshToken;
+import com.greenwich.flowerplus.entity.Role;
 import com.greenwich.flowerplus.entity.UserAccount;
 import com.greenwich.flowerplus.entity.UserProfile;
 import com.greenwich.flowerplus.repository.UserAccountRepository;
 import com.greenwich.flowerplus.repository.UserProfileRepository;
+import com.greenwich.flowerplus.repository.RoleRepository;
 import com.greenwich.flowerplus.service.AuthService;
 import com.greenwich.flowerplus.service.RefreshTokenService;
 import com.greenwich.flowerplus.service.TokenBlacklistService;
@@ -43,6 +45,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserAccountRepository userAccountRepository;
     private final UserProfileRepository userProfileRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final RefreshTokenService refreshTokenService;
@@ -119,7 +122,10 @@ public class AuthServiceImpl implements AuthService {
             .provider(IdentityProvider.LOCAL)
             .build();
             
-        // NO Role assignment
+        // Assign Default Role: CUSTOMER
+        Role customerRole = roleRepository.findByName("CUSTOMER")
+            .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+        user.addRole(customerRole);
 
         user = userAccountRepository.save(user);
 
