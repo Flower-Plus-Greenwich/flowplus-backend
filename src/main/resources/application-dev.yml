@@ -106,7 +106,7 @@ spring:
 
 open:
   api:
-    serverUrl: http://localhost:8080
+    serverUrl: ${OPEN_API_SERVER_URL:http://localhost:8080}
     title: Flower Plus  API (Dev)
     version: v1.0.0
     serverName: Flower Plus Backend API
