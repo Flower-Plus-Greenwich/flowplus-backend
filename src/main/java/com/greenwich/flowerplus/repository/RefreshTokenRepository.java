@@ -12,6 +12,10 @@ import java.util.Optional;
 
 @Repository
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
+    
+    @Query("SELECT rt FROM RefreshToken rt WHERE rt.user.id = :userId AND rt.revoked = false AND rt.expiryDate > CURRENT_TIMESTAMP ORDER BY rt.expiryDate DESC LIMIT 1")
+    Optional<RefreshToken> findValidTokenByUserId(@Param("userId") Long userId);
+
     Optional<RefreshToken> findByToken(String token);
 
     @Modifying

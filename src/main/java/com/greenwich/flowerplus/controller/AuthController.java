@@ -5,8 +5,11 @@ import com.greenwich.flowerplus.common.exception.TokenRefreshException;
 import com.greenwich.flowerplus.common.utils.CookieUtils;
 import com.greenwich.flowerplus.dto.request.LoginRequest;
 import com.greenwich.flowerplus.dto.request.RegisterRequest;
+import com.greenwich.flowerplus.dto.request.RoleRequest;
 import com.greenwich.flowerplus.dto.response.AuthResponse;
+import com.greenwich.flowerplus.dto.response.RoleResponse;
 import com.greenwich.flowerplus.service.AuthService;
+import com.greenwich.flowerplus.service.RoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -16,13 +19,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
+import java.util.List;
 
 /**
  * Simplified authentication controller.
@@ -41,6 +43,7 @@ import java.time.Duration;
 public class AuthController {
 
     private final AuthService authService;
+    private final RoleService roleService;
     public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
 
     /**
@@ -138,5 +141,61 @@ public class AuthController {
             .sameSite("Strict")
             .build();
         response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+    }
+
+    // ========================================================================
+    // ROLE MANAGEMENT (SHOP_OWNER Only)
+    // ========================================================================
+
+    @GetMapping("/roles")
+    @PreAuthorize("hasRole('SHOP_OWNER')")
+    public ResponseEntity<ApiResult<List<RoleResponse>>> getRoles() {
+        return ResponseEntity.ok(ApiResult.success(roleService.getRoles()));
+    }
+
+    @GetMapping("/roles/{id}")
+    @PreAuthorize("hasRole('SHOP_OWNER')")
+    public ResponseEntity<ApiResult<RoleResponse>> getRoleById(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResult.success(roleService.getRoleById(id)));
+    }
+
+    @PostMapping("/roles")
+    @PreAuthorize("hasRole('SHOP_OWNER')")
+    public ResponseEntity<ApiResult<RoleResponse>> createRole(@Valid @RequestBody RoleRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResult.success(roleService.createRole(request), "Role created successfully"));
+    }
+
+    @PutMapping("/roles/{id}")
+    @PreAuthorize("hasRole('SHOP_OWNER')")
+    public ResponseEntity<ApiResult<RoleResponse>> updateRole(
+            @PathVariable Long id,
+            @Valid @RequestBody RoleRequest request) {
+        return ResponseEntity.ok(ApiResult.success(roleService.updateRole(id, request), "Role updated successfully"));
+    }
+
+    @DeleteMapping("/roles/{id}")
+    @PreAuthorize("hasRole('SHOP_OWNER')")
+    public ResponseEntity<ApiResult<Void>> deleteRole(@PathVariable Long id) {
+        roleService.deleteRole(id);
+        return ResponseEntity.ok(ApiResult.success(null, "Role deleted successfully"));
+    }
+
+    @PostMapping("/users/{userId}/roles/{roleId}")
+    @PreAuthorize("hasRole('SHOP_OWNER')")
+    public ResponseEntity<ApiResult<Void>> assignRole(
+            @PathVariable Long userId,
+            @PathVariable Long roleId) {
+        roleService.assignRole(userId, roleId);
+        return ResponseEntity.ok(ApiResult.success(null, "Role assigned successfully"));
+    }
+
+    @DeleteMapping("/users/{userId}/roles/{roleId}")
+    @PreAuthorize("hasRole('SHOP_OWNER')")
+    public ResponseEntity<ApiResult<Void>> removeRole(
+            @PathVariable Long userId,
+            @PathVariable Long roleId) {
+        roleService.removeRole(userId, roleId);
+        return ResponseEntity.ok(ApiResult.success(null, "Role removed successfully"));
     }
 }

@@ -51,6 +51,7 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenService refreshTokenService;
     private final TokenBlacklistService tokenBlacklistService;
     private final AuthenticationManager authenticationManager;
+    private final com.greenwich.flowerplus.repository.RefreshTokenRepository refreshTokenRepository;
 
     @Override
     @Transactional
@@ -67,8 +68,20 @@ public class AuthServiceImpl implements AuthService {
 
             // Generate tokens
             String accessToken = tokenService.generateAccessToken(user);
-            String refreshToken = tokenService.generateRefreshToken();
-            refreshTokenService.saveRefreshToken(user, refreshToken);
+
+            // Reuse valid refresh token if exists
+            RefreshToken validRefreshToken = refreshTokenRepository.findValidTokenByUserId(user.getId())
+                .orElse(null);
+            
+            String refreshToken;
+            if (validRefreshToken != null) {
+                refreshToken = validRefreshToken.getToken();
+                log.info("Reusing valid refresh token for user: {}", request.getEmail());
+            } else {
+                refreshToken = tokenService.generateRefreshToken();
+                refreshTokenService.saveRefreshToken(user, refreshToken);
+                log.info("Generated NEW refresh token for user: {}", request.getEmail());
+            }
 
             log.info("User {} logged in successfully", request.getEmail());
 

@@ -1,0 +1,116 @@
+app:
+  base-url: ${BACKEND_URL:http://localhost:8080}
+  frontend-url: ${FRONTEND_URL:http://localhost:3000}
+  db-seeder: ${DB_SEEDER:false}
+  name: FLOWERPLUS
+  tagline: Flower Shop
+  url: ${APP_DOMAIN:https://flowerplus.io.vn}
+
+jwt:
+  key:
+    id: "flowerplus-key-2025"
+    private-path: classpath:certs/private_key.pem
+    public-path: classpath:certs/public_key.pem
+  refresh:
+    expiration: 2592000000 # 30 days in milliseconds
+
+cloudinary:
+  cloudName: ${CLOUDINARY_CLOUD_NAME}
+  apiKey: ${CLOUDINARY_API_KEY}
+  apiSecret: ${CLOUDINARY_API_SECRET}
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  jackson:
+    time-zone: UTC
+    default-property-inclusion: non_null
+
+  web:
+    resources:
+      add-mappings: false
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  flyway:
+    enabled: true
+    user: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    baseline-on-migrate: true
+    baseline-version: 0
+    locations: classpath:db/migration
+    validate-on-migrate: true
+    default-schema: public
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+    show_sql: false
+    hibernate:
+      ddl-auto: none
+
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:1025}
+    username: ${MAIL_USERNAME:noreply@flowerplus.com}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      repositories:
+        enabled: false
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: openid, profile, email
+            redirect-uri: ${GOOGLE_REDIRECT_URI:https://flowerplus.io.vn/login/oauth2/code/google}
+            authorization-grant-type: authorization_code
+            client-name: Google
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v2/userinfo
+            user-name-attribute: sub
+
+open:
+  api:
+    serverUrl: ${BACKEND_URL:https://flowerplus.io.vn}
+    title: Flower Plus API (Production)
+    version: v1.0.0
+    serverName: Flower Plus Backend API
+    description: API documentation for Flower Plus shop ecommerce project.
+
+logging:
+  level:
+    root: INFO
+    com.greenwich.flowerplus: INFO
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: native
