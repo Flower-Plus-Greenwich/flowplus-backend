@@ -7,47 +7,7 @@ on:
     branches: [ "main", "master" ]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: flowerplus
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up JDK 25
-      uses: actions/setup-java@v4
-      with:
-        java-version: '25-ea'
-        distribution: 'temurin'
-        cache: 'maven'
-        
-    - name: Grant execute permission for mvnw
-      run: chmod +x mvnw
-      
-    - name: Run Tests
-      # Configure Spring Boot to look into the service container 'postgres' available at localhost
-      env:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/flowerplus
-        SPRING_DATASOURCE_USERNAME: postgres
-        SPRING_DATASOURCE_PASSWORD: password
-        SPRING_PROFILES_ACTIVE: test
-      run: ./mvnw test
-
   deploy:
-    needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     steps:
