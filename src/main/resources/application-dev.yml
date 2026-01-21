@@ -35,12 +35,15 @@ spring:
       add-mappings: false
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/flowerplus_db?stringtype=unspecified
-    username: ${POSTGRES_USER:thang}
-    password: ${POSTGRES_PASSWORD:123456}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/flowerplus_db?stringtype=unspecified}
+    username: ${SPRING_DATASOURCE_USERNAME:${POSTGRES_USER:thang}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${POSTGRES_PASSWORD:123456}}
+    driver-class-name: org.postgresql.Driver
 
   flyway:
     enabled: true
+    user: ${SPRING_DATASOURCE_USERNAME:${POSTGRES_USER:thang}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${POSTGRES_PASSWORD:123456}}
     # Automatically create flyway_schema_history table if it doesn't exist
     baseline-on-migrate: true
     # Set baseline version to 0 (to avoid errors if DB already has data)
@@ -74,10 +77,11 @@ spring:
 
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
       repositories:
         enabled: false
+      url: ${REDIS_URL}
 
 
   security:
@@ -102,7 +106,7 @@ spring:
 
 open:
   api:
-    serverUrl: http://localhost:8080
+    serverUrl: https://api.flowerplus.io.vn
     title: Flower Plus  API (Dev)
     version: v1.0.0
     serverName: Flower Plus Backend API

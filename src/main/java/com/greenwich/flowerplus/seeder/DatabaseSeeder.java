@@ -95,6 +95,8 @@ public class DatabaseSeeder implements CommandLineRunner {
                 .userId(user.getId())
                 .fullName(fullName)
                 .gender(Gender.OTHER)
+                .firstName("Test")
+                .lastName("Test")
                 .birthDate(LocalDate.of(1990, 1, 1))
                 .phoneNumber("0123456789")
                 .build();
