@@ -81,7 +81,7 @@ spring:
       port: ${REDIS_PORT:6379}
       repositories:
         enabled: false
-      url: ${REDIS_URL:}
+      url: ${REDIS_URL:redis://localhost:6379}
 
 
   security:
@@ -106,7 +106,7 @@ spring:
 
 open:
   api:
-    serverUrl: https://api.flowerplus.io.vn
+    serverUrl: http://localhost:8080
     title: Flower Plus  API (Dev)
     version: v1.0.0
     serverName: Flower Plus Backend API
