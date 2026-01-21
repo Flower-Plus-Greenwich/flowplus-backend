@@ -80,6 +80,7 @@ class AuthServiceImplTest {
             .password("encodedPassword")
             .userRoles(new HashSet<>())
             .build();
+        userAccount.setId(1L);
     }
 
     @Test
