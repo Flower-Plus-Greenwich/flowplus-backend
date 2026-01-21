@@ -1,0 +1,46 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  datasource:
+    # Use standard Postgres port (service container in CI, or local Docker)
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/flowerplus}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop # Essential for testing: Create schema, run tests, drop it
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+
+  flyway:
+    enabled: false # Disable Flyway in tests to let Hibernate manage schema (faster/safer for unit/context tests)
+
+  # Disable integrations clearly
+  data:
+    redis:
+      repositories:
+        enabled: false
+  
+  mail:
+    host: localhost
+    port: 1025
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: dummy
+            client-secret: dummy
+
+logging:
+  level:
+    root: INFO
+    com.greenwich.flowerplus: INFO
