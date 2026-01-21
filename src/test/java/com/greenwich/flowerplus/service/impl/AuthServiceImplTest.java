@@ -107,7 +107,7 @@ class AuthServiceImplTest {
         when(userAccountRepository.existsByEmail(anyString())).thenReturn(true);
 
         AppException exception = assertThrows(AppException.class, () -> authService.register(registerRequest));
-        assertEquals(ErrorCode.USER_ALREADY_EXISTS, exception.getErrorCode());
+        assertEquals(ErrorCode.USER_ALREADY_EXISTS.getCode(), exception.getErrorCode());
     }
 
     @Test
@@ -117,7 +117,7 @@ class AuthServiceImplTest {
         );
 
         AppException exception = assertThrows(AppException.class, () -> authService.register(badRequest));
-        assertEquals(ErrorCode.INVALID_CONFIRM_PASSWORD, exception.getErrorCode());
+        assertEquals(ErrorCode.INVALID_CONFIRM_PASSWORD.getCode(), exception.getErrorCode());
     }
 
     @Test
@@ -166,6 +166,6 @@ class AuthServiceImplTest {
         when(authenticationManager.authenticate(any())).thenThrow(new BadCredentialsException("Bad creds"));
 
         AppException exception = assertThrows(AppException.class, () -> authService.login(loginRequest));
-        assertEquals(ErrorCode.INVALID_CREDENTIALS, exception.getErrorCode());
+        assertEquals(ErrorCode.INVALID_CREDENTIALS.getCode(), exception.getErrorCode());
     }
 }
