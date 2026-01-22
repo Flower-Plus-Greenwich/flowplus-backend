@@ -40,12 +40,10 @@ public class SecurityConfig {
             "/api/v1/auth/register",
             "/api/v1/auth/refresh",
             "/api/v1/auth/.well-known/jwks.json",
-            // Public read access might be needed for products/categories, but User Request was specific about Auth.
-            // I will err on side of caution and keep logical public read access if it was there,
-            // or just follow "Clean, minimal authentication flows".
-            // The previous config had public access to locations, products, categories.
+            // Explicitly define public read access for products and categories
             "/api/v1/locations/**",
-            "/api/v1/products/**",
+            "/api/v1/products",       // Search/List Public
+            "/api/v1/products/{id}",  // Detail Public
             "/api/v1/categories/**"
     };
 
