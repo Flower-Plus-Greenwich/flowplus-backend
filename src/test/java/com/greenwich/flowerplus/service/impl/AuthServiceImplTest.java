@@ -66,11 +66,19 @@ class AuthServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        registerRequest = new RegisterRequest(
-            "John", "Doe", "john.doe@example.com", "Password@123", "Password@123"
-        );
+        registerRequest = new RegisterRequest();
+        //"John", "Doe", "john.doe@example.com", "Password@123", "Password@123"
+        registerRequest.setEmail("john.doe@example.com");
+        registerRequest.setPassword("Password@123");
+        registerRequest.setFirstName("John");
+        registerRequest.setLastName("Doe");
+        registerRequest.setConfirmPassword("Password@123");
 
-        loginRequest = new LoginRequest("john.doe@example.com", "Password@123");
+
+        loginRequest = new LoginRequest();
+        //"john.doe@example.com", "Password@123"
+        loginRequest.setEmail("john.doe");
+        loginRequest.setPassword("Password@123");
 
         customerRole = Role.builder().id(1L).name("CUSTOMER").build();
 
@@ -112,9 +120,7 @@ class AuthServiceImplTest {
 
     @Test
     void register_Fail_PasswordMismatch() {
-        RegisterRequest badRequest = new RegisterRequest(
-            "John", "Doe", "john@example.com", "Pass@123", "Pass@999"
-        );
+        RegisterRequest badRequest = new RegisterRequest();
 
         AppException exception = assertThrows(AppException.class, () -> authService.register(badRequest));
         assertEquals(ErrorCode.INVALID_CONFIRM_PASSWORD.getCode(), exception.getErrorCode());
