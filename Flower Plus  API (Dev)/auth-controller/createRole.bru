@@ -1,0 +1,74 @@
+meta {
+  name: createRole
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/roles
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "",
+    "description": ""
+  }
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/api/v1/auth/roles
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "name": "",
+        "description": ""
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: */*
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          "data": {
+            "id": 0,
+            "name": "",
+            "description": "",
+            "createdBy": "",
+            "updatedBy": ""
+          },
+          "message": "",
+          "pagination": {
+            "page": 0,
+            "size": 0,
+            "totalElements": 0,
+            "totalPages": 0
+          },
+          "error": {
+            "code": "",
+            "message": "",
+            "traceId": "",
+            "details": ""
+          }
+        }
+      '''
+    }
+  }
+}

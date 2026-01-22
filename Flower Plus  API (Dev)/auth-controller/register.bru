@@ -1,0 +1,77 @@
+meta {
+  name: register
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/register
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "firstName": "",
+    "lastName": "",
+    "email": "",
+    "password": "",
+    "confirmPassword": ""
+  }
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/api/v1/auth/register
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "firstName": "",
+        "lastName": "",
+        "email": "",
+        "password": "",
+        "confirmPassword": ""
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: */*
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          "data": {
+            "accessToken": "",
+            "refreshToken": ""
+          },
+          "message": "",
+          "pagination": {
+            "page": 0,
+            "size": 0,
+            "totalElements": 0,
+            "totalPages": 0
+          },
+          "error": {
+            "code": "",
+            "message": "",
+            "traceId": "",
+            "details": ""
+          }
+        }
+      '''
+    }
+  }
+}
