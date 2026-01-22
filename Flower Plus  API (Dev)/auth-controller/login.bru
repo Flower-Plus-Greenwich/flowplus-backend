@@ -1,0 +1,96 @@
+meta {
+  name: login
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{baseUrl}}/api/v1/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "owner@flowerplus.com",
+    "password": "password123"
+  }
+}
+
+script:post-response {
+  // 1. Lấy kết quả trả về từ Server
+  var jsonData = res.getBody();
+  
+  // 2. In ra Console để kiểm tra (xem góc trái dưới cùng Postman)
+  console.log("Kết quả Login trả về:", jsonData);
+  
+  // 3. Lấy Token (SỬA LẠI CHỖ NÀY NẾU CẦN)
+  // Tùy backend của bạn trả về kiểu nào, hãy chọn 1 dòng đúng:
+  
+  // Kiểu A: Trả về trực tiếp { "accessToken": "xyz..." }
+  // var token = jsonData.accessToken; 
+  
+  // Kiểu B: Trả về lồng nhau { "data": { "accessToken": "xyz..." } }
+  var token = jsonData.data.accessToken; 
+  
+  // 4. Lưu vào biến môi trường chung (Collection Variable)
+  if (token) {
+      bru.setEnvVar("accessToken", token);
+      console.log("✅ Đã lưu token thành công!");
+  } else {
+      console.log("❌ Không tìm thấy token! Hãy kiểm tra lại cấu trúc JSON.");
+  }
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/api/v1/auth/login
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "email": "",
+        "password": ""
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: */*
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          "data": {
+            "accessToken": "",
+            "refreshToken": ""
+          },
+          "message": "",
+          "pagination": {
+            "page": 0,
+            "size": 0,
+            "totalElements": 0,
+            "totalPages": 0
+          },
+          "error": {
+            "code": "",
+            "message": "",
+            "traceId": "",
+            "details": ""
+          }
+        }
+      '''
+    }
+  }
+}

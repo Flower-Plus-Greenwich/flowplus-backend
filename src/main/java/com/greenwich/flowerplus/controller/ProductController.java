@@ -63,7 +63,7 @@ public class ProductController {
     // - Returns ProductResponseAdmin (detailed)
     // - Requires OWNER, STAFF, ADMIN role
     // ---------------------------------------------------------
-    @PreAuthorize("hasAnyRole('SHOP_OWNER', 'SHOP_STAFF', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SHOP_OWNER', 'ROLE_SHOP_STAFF', 'ROLE_ADMIN')")
     @GetMapping("/admin")
     public ResponseEntity<ApiResult<List<ProductResponseAdmin>>> searchAdmin(
             @ModelAttribute ProductSearchRequest request) {
