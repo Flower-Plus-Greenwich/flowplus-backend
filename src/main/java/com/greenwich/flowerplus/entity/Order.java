@@ -1,11 +1,16 @@
 package com.greenwich.flowerplus.entity;
 
+import com.greenwich.flowerplus.common.enums.DeliveryTimeSlot;
 import com.greenwich.flowerplus.common.enums.OrderStatus;
 import com.greenwich.flowerplus.common.enums.PaymentStatus;
 import com.greenwich.flowerplus.common.utils.OrderCodeGenerator;
+import com.greenwich.flowerplus.common.utils.TsidUtils;
+import com.greenwich.flowerplus.dto.snapshot.ShippingAddressSnapshot;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -20,25 +25,22 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "orders", indexes = {
-        // 1. Index để tìm đơn hàng theo mã vận đơn
         @Index(name = "idx_order_code", columnList = "order_code"),
-
-        // 2. Index để load lịch sử đơn hàng của user cực nhanh
         @Index(name = "idx_order_user_id", columnList = "user_id"),
 
-        // 3. Index để Admin lọc đơn theo trạng thái (VD: Lọc đơn chờ duyệt)
-        @Index(name = "idx_order_status", columnList = "status"),
-
-        // 4. Index để báo cáo doanh thu theo ngày
-        @Index(name = "idx_order_created_at", columnList = "created_at")
+        // Dùng Index chỉ khi muốn tìm kiếm 1 đơn nhanh nhất thôi, chứ 2 cái dưới này mục đính thường là tìm nhiều đứa chung 1 trạng thái nên kh dùng index
+//        @Index(name = "idx_order_status", columnList = "status"),
+//        @Index(name = "idx_order_created_at", columnList = "created_at")
 })public class Order extends BaseTsidSoftDeleteEntity {
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private UserProfile userId;
+    private UserProfile user;
 
     @Column(name = "total_amount", precision = 15, scale = 2, nullable = false)
     private BigDecimal totalAmount;
+
+    @Column(name = "discount_amount", precision = 15, scale = 2)
+    private BigDecimal discountAmount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 30, nullable = false)
@@ -54,21 +56,20 @@ import java.util.List;
     @Column(name = "payment_method", length = 30)
     private String paymentMethod;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "delivery_address_id")
-    private ContactAddress deliveryAddress;
+    //TODO: Chơi snapshot địa chỉ khi đặt hàng
+    // Vì thế nên sẽ kh dùng FK ở đây, thay vào đó dùng JSONB
+    // ContactAddress đã có RecipientName, RecipientPhone rồi
+    // Lấy tù ContactAddress ra theo cách copy cột, kh dùng FK
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name="shipping_address", columnDefinition = "jsonb", nullable = false)
+    private ShippingAddressSnapshot shippingInfo;
 
     @Column(name = "delivery_date")
     private Instant deliveryDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "delivery_time_slot", length = 50)
-    private String deliveryTimeSlot;
-
-    @Column(name = "recipient_name", length = 100)
-    private String recipientName;
-
-    @Column(name = "recipient_phone", length = 20)
-    private String recipientPhone;
+    private DeliveryTimeSlot deliveryTimeSlot;
 
     @Column(name = "customer_note", columnDefinition = "TEXT")
     private String customerNote;
@@ -85,22 +86,10 @@ import java.util.List;
     @Column(name = "order_code", unique = true, length = 20, nullable = false)
     private String orderCode;
 
-    @Override
-    protected void onPrePersist() {
-        // Gọi super để thằng cha (BaseTsid) sinh ID trước
-        super.onPrePersist();
-
-        // Lúc này this.getId() CHẮC CHẮN đã có dữ liệu (vì TSID sinh trên Java, không phải DB)
-        if (this.orderCode == null && this.getId() != null) {
-            this.orderCode = OrderCodeGenerator.encode(this.getId());
-        }
-    }
-
     @OneToMany(
             mappedBy = "order",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    @Builder.Default
-    private List<OrderDetail> orderDetails = new ArrayList<>();
+    private List<OrderItem> orderItems = new ArrayList<>();
 }
