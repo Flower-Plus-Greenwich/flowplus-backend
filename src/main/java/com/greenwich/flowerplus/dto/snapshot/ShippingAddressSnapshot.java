@@ -4,6 +4,8 @@ import com.greenwich.flowerplus.entity.ContactAddress;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 @Setter
@@ -19,19 +21,8 @@ public class ShippingAddressSnapshot implements Serializable {
     private String specificAddress;
 
     public String toFullString() {
-        return String.format("%s, %s, %s, %s", specificAddress, ward, district, province);
-    }
-
-    public static ShippingAddressSnapshot fromAddress(ContactAddress address) {
-        if (address == null) return null;
-
-        return ShippingAddressSnapshot.builder()
-                .fullName(address.getRecipientName())
-                .phoneNumber(address.getPhoneNumber())
-                .province(address.getProvinceName())
-                .district(address.getDistrictName())
-                .ward(address.getWardName())
-                .specificAddress(address.getDetailAddress())
-                .build();
+        return Stream.of(specificAddress, ward, district, province)
+                .filter(s -> s != null && !s.isBlank())
+                .collect(Collectors.joining(", "));
     }
 }

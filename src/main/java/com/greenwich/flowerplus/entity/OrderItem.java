@@ -17,9 +17,9 @@ import java.math.BigDecimal;
 //@Builder
 @Entity
 @Table(
-        name = "order_details",
+        name = "order_items",
         indexes = {
-                @Index(name = "idx_order_detail_order_id", columnList = "order_id")
+                @Index(name = "idx_order_item_order_id", columnList = "order_id")
         }
 )
 // Logic:
