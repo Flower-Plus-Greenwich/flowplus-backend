@@ -2,6 +2,7 @@ package com.greenwich.flowerplus.common.enums;
 
 import lombok.Getter;
 
+@Getter
 public enum DeliveryTimeSlot {
     SLOT_MORNING("09:00 - 12:00"),
     SLOT_NOON("12:00 - 13:00"),
