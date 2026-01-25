@@ -1,0 +1,101 @@
+meta {
+  name: searchAdmin
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/v1/products/admin?keyword=test&categoryId=aaaa&categorySlug=test-thoi&minPrice=1&maxPrice=10000000&status=ACTIVE&page=1&size=20&sort=newest
+  body: none
+  auth: none
+}
+
+params:query {
+  keyword: test
+  categoryId: aaaa
+  categorySlug: test-thoi
+  minPrice: 1
+  maxPrice: 10000000
+  status: ACTIVE
+  page: 1
+  size: 20
+  sort: newest
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/api/v1/products/admin
+    method: GET
+    mode: none
+    params:query: {
+      request: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: */*
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          "data": [
+            {
+              "id": 0,
+              "name": "",
+              "slug": "",
+              "description": "",
+              "basePrice": 0,
+              "categoryId": 0,
+              "categoryName": "",
+              "status": "",
+              "assets": [
+                {
+                  "id": "",
+                  "url": "",
+                  "publicId": "",
+                  "type": "",
+                  "isThumbnail": false,
+                  "position": 0,
+                  "metaData": {}
+                }
+              ],
+              "createdBy": {
+                "username": "",
+                "email": "",
+                "id": 0,
+                "avatarUrl": ""
+              },
+              "updatedBy": {},
+              "createdAt": "",
+              "updatedAt": ""
+            }
+          ],
+          "message": "",
+          "pagination": {
+            "page": 0,
+            "size": 0,
+            "totalElements": 0,
+            "totalPages": 0
+          },
+          "error": {
+            "code": "",
+            "message": "",
+            "traceId": "",
+            "details": ""
+          }
+        }
+      '''
+    }
+  }
+}

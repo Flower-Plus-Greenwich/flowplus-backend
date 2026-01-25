@@ -1,9 +1,9 @@
 package com.greenwich.flowerplus.common.enums;
 
 public enum ProductStatus {
-    DRAFT,
-    ACTIVE,
-    INACTIVE,
-    ARCHIVED
+    DRAFT,      // Nháp
+    ACTIVE,     // Đang bán
+    INACTIVE,   // Tạm ẩn
+    ARCHIVED    // Ngưng kinh doanh
 }
 
