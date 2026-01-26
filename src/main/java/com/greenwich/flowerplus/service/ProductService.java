@@ -33,11 +33,11 @@ public interface ProductService {
     ProductResponse getProductForPublic(Long id);
 
     // ============ CREATE ============
-    ProductResponse createGeneralInfoProduct(CreateGeneralInfoProductRequest request);
+    ProductResponseAdmin createGeneralInfoProduct(CreateGeneralInfoProductRequest request);
 
     // ============ UPDATE GENERAL INFO ============
-    ProductResponse updateProduct(Long id, UpdateProductInfoRequest request);
-    ProductResponse updateProductStatus(Long id, UpdateProductStatusRequest request);
+    ProductResponseAdmin updateProduct(Long id, UpdateProductInfoRequest request);
+    ProductResponseAdmin updateProductStatus(Long id, UpdateProductStatusRequest request);
 
     // ============ MANAGE ASSETS (Single Responsibility) ============
     /**

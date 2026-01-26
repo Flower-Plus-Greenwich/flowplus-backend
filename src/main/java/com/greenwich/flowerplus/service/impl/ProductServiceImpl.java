@@ -84,7 +84,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponse createGeneralInfoProduct(CreateGeneralInfoProductRequest request) {
+    public ProductResponseAdmin createGeneralInfoProduct(CreateGeneralInfoProductRequest request) {
         log.info("Creating draft product: {}", request.name());
 
         // 0. Validate input
@@ -138,15 +138,15 @@ public class ProductServiceImpl implements ProductService {
         // 4. Assign Category
         product.addCategory(category);
 
-        // 5. Save
-        Product savedProduct = productRepository.save(product);
+        // 5. Save and Flush to ensure audit info is populated
+        Product savedProduct = productRepository.saveAndFlush(product);
 
-        return productMapper.toProductResponse(savedProduct);
+        return productMapper.toAdminDto(savedProduct);
     }
 
     @Override
     @Transactional
-    public ProductResponse updateProduct(Long id, UpdateProductInfoRequest request) {
+    public ProductResponseAdmin updateProduct(Long id, UpdateProductInfoRequest request) {
         log.info("Updating product id: {}", id);
 
         // Validate input
@@ -167,7 +167,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         Product savedProduct = productRepository.saveAndFlush(product);
-        return productMapper.toProductResponse(savedProduct);
+        return productMapper.toAdminDto(savedProduct);
     }
 
     @Override
@@ -183,7 +183,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponse updateProductStatus(Long id, UpdateProductStatusRequest request) {
+    public ProductResponseAdmin updateProductStatus(Long id, UpdateProductStatusRequest request) {
         log.info("Updating product status: {}", id);
 
         Product product = productRepository.findById(id)
@@ -192,7 +192,7 @@ public class ProductServiceImpl implements ProductService {
         //validate status is correct
         product.setStatus(request.productStatus());
 
-        return productMapper.toProductResponse(productRepository.saveAndFlush(product));
+        return productMapper.toAdminDto(productRepository.saveAndFlush(product));
     }
 
     // ============================================================================

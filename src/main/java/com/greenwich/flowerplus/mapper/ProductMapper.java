@@ -68,6 +68,7 @@ public interface ProductMapper {
     @Mapping(target = "length", source = "shippingInfo.length")
     @Mapping(target = "width", source = "shippingInfo.width")
     @Mapping(target = "height", source = "shippingInfo.height")
+    @Mapping(target = "inStock", expression = "java(product.getPreparedQuantity() > 0 || product.isMakeToOrder())")
     @Mapping(target = "isMakeToOrder", source = "makeToOrder")
     ProductResponseAdmin toAdminDto(Product product);
 

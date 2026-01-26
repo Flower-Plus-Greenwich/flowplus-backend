@@ -6,7 +6,6 @@ import com.greenwich.flowerplus.dto.request.ProductAssetRequest;
 import com.greenwich.flowerplus.dto.request.ProductCategoryRequest;
 import com.greenwich.flowerplus.dto.request.ProductSearchRequest;
 import com.greenwich.flowerplus.dto.request.UpdateProductInfoRequest;
-import com.greenwich.flowerplus.dto.response.ProductResponse;
 import com.greenwich.flowerplus.dto.response.ProductResponseAdmin;
 import com.greenwich.flowerplus.service.ProductSearchService;
 import com.greenwich.flowerplus.service.ProductService;
@@ -94,10 +93,10 @@ public class AdminProductController {
         """)
     @PreAuthorize("hasAnyAuthority('ROLE_SHOP_OWNER', 'ROLE_SHOP_STAFF', 'ROLE_ADMIN')")
     @PostMapping("/draft")
-    public ResponseEntity<ApiResult<ProductResponse>> createDraftProduct(
+    public ResponseEntity<ApiResult<ProductResponseAdmin>> createDraftProduct(
             @Valid @RequestBody CreateGeneralInfoProductRequest request) {
         log.info("Received request to create draft product: {}", request.name());
-        ProductResponse productResponse = productService.createGeneralInfoProduct(request);
+        ProductResponseAdmin productResponse = productService.createGeneralInfoProduct(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResult.success(productResponse, "Product created successfully"));
     }
@@ -117,11 +116,11 @@ public class AdminProductController {
         """)
     @PreAuthorize("hasAnyAuthority('ROLE_SHOP_OWNER', 'ROLE_SHOP_STAFF', 'ROLE_ADMIN')")
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResult<ProductResponse>> updateGeneralInfoProduct(
+    public ResponseEntity<ApiResult<ProductResponseAdmin>> updateGeneralInfoProduct(
             @PathVariable Long id,
             @Valid @RequestBody UpdateProductInfoRequest updateProductRequest) {
         log.info("Received request to update general info product with id: {}", id);
-        ProductResponse productResponse = productService.updateProduct(id, updateProductRequest);
+        ProductResponseAdmin productResponse = productService.updateProduct(id, updateProductRequest);
         return ResponseEntity.ok(ApiResult.success(productResponse, "Product updated successfully"));
     }
 
