@@ -1,0 +1,69 @@
+meta {
+  name: getMaterials
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/v1/materials
+  body: none
+  auth: inherit
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/api/v1/materials
+    method: GET
+    mode: none
+  }
+  
+  response: {
+    headers: {
+      Content-Type: */*
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+        [
+          {
+            "createdAt": "",
+            "updatedAt": "",
+            "createdBy": "",
+            "updatedBy": "",
+            "id": 0,
+            "deletedAt": "",
+            "name": "",
+            "unit": "",
+            "imageUrl": "",
+            "costPrice": 0,
+            "sellingPrice": 0,
+            "type": "",
+            "materialStock": {
+              "createdAt": "",
+              "updatedAt": "",
+              "createdBy": "",
+              "updatedBy": "",
+              "id": 0,
+              "material": "",
+              "quantity": 0,
+              "reservedQuantity": 0,
+              "openingBalance": 0,
+              "reorderLevel": 0,
+              "availableStock": 0
+            },
+            "deleted": false
+          }
+        ]
+      '''
+    }
+  }
+}

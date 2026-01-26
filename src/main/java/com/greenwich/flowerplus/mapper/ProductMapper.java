@@ -1,68 +1,116 @@
 package com.greenwich.flowerplus.mapper;
 
 import com.greenwich.flowerplus.dto.response.AssetResponse;
-import com.greenwich.flowerplus.dto.response.AuditorResponse;
 import com.greenwich.flowerplus.dto.response.ProductListingDto;
 import com.greenwich.flowerplus.dto.response.ProductResponse;
 import com.greenwich.flowerplus.dto.response.ProductResponseAdmin;
-import com.greenwich.flowerplus.entity.Category;
 import com.greenwich.flowerplus.entity.Product;
 import com.greenwich.flowerplus.entity.ProductAsset;
+import com.greenwich.flowerplus.entity.ProductCategory;
+import com.greenwich.flowerplus.dto.snapshot.CategorySnapshot;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.Collections;
 import java.util.List;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+/**
+ * ProductMapper - Maps Product entity to various DTOs
+ * 
+ * Supports multiple category relationships via ProductCategory
+ */
+@Mapper(componentModel = "spring", 
+        uses = {AuditorMapper.class},
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductMapper {
 
-    @Mapping(target = "categoryId", source = "categories", qualifiedByName = "mapFirstCategoryId")
-    @Mapping(target = "categoryName", source = "categories", qualifiedByName = "mapFirstCategoryName")
+    // ============================================================================
+    // CUSTOMER-FACING PRODUCT RESPONSE (Product Detail Page)
+    // ============================================================================
+
+    @Mapping(target = "primaryCategory", source = "productCategories", qualifiedByName = "mapFirstCategorySnapshot")
+    @Mapping(target = "categories", source = "productCategories", qualifiedByName = "mapAllCategorySnapshots")
     @Mapping(target = "assets", source = "assets")
+    @Mapping(target = "weight", source = "shippingInfo.weightInGram")
+    @Mapping(target = "length", source = "shippingInfo.length")
+    @Mapping(target = "width", source = "shippingInfo.width")
+    @Mapping(target = "height", source = "shippingInfo.height")
+    @Mapping(target = "inStock", expression = "java(product.getPreparedQuantity() > 0 || product.isMakeToOrder())")
+    @Mapping(target = "isMakeToOrder", source = "makeToOrder")
     ProductResponse toProductResponse(Product product);
+
+    // ============================================================================
+    // LIGHTWEIGHT LISTING DTO (for search results - storefront)
+    // ============================================================================
 
     @Mapping(target = "thumbnail", source = "thumbnail")
     @Mapping(target = "price", source = "basePrice")
-    @Mapping(target = "categoryName", source = "categories", qualifiedByName = "mapFirstCategoryName")
+    @Mapping(target = "categoryName", source = "productCategories", qualifiedByName = "mapFirstCategoryName")
+    @Mapping(target = "categories", source = "productCategories", qualifiedByName = "mapAllCategorySnapshots")
     @Mapping(target = "availableStock", source = "preparedQuantity")
     @Mapping(target = "inStock", expression = "java(product.getPreparedQuantity() > 0 || product.isMakeToOrder())")
+    @Mapping(target = "averageRating", source = "averageRating")
+    @Mapping(target = "reviewCount", source = "reviewCount")
     ProductListingDto toListingDto(Product product);
 
-    @Mapping(target = "categoryName", source = "categories", qualifiedByName = "mapFirstCategoryName")
-    @Mapping(target = "categoryId", source = "categories", qualifiedByName = "mapFirstCategoryId")
+    // ============================================================================
+    // ADMIN RESPONSE (Backoffice - full details)
+    // ============================================================================
+
+    @Mapping(target = "primaryCategory", source = "productCategories", qualifiedByName = "mapFirstCategorySnapshot")
+    @Mapping(target = "categories", source = "productCategories", qualifiedByName = "mapAllCategorySnapshots")
     @Mapping(target = "assets", source = "assets")
-    @Mapping(target = "createdBy", source = "createdBy", qualifiedByName = "mapAuditorId")
-    @Mapping(target = "updatedBy", source = "updatedBy", qualifiedByName = "mapAuditorId")
+    @Mapping(target = "createdBy", source = "createdBy", qualifiedByName = "mapAuditor")
+    @Mapping(target = "updatedBy", source = "updatedBy", qualifiedByName = "mapAuditor")
+    @Mapping(target = "weight", source = "shippingInfo.weightInGram")
+    @Mapping(target = "length", source = "shippingInfo.length")
+    @Mapping(target = "width", source = "shippingInfo.width")
+    @Mapping(target = "height", source = "shippingInfo.height")
+    @Mapping(target = "isMakeToOrder", source = "makeToOrder")
     ProductResponseAdmin toAdminDto(Product product);
 
+    // ============================================================================
+    // HELPER METHODS - Category Mapping
+    // ============================================================================
+
     @Named("mapFirstCategoryName")
-    default String mapFirstCategoryName(List<Category> categories) {
-        if (categories == null || categories.isEmpty()) {
+    default String mapFirstCategoryName(List<ProductCategory> productCategories) {
+        if (productCategories == null || productCategories.isEmpty()) {
             return null;
         }
-        return categories.get(0).getName();
+        return productCategories.getFirst().getCategory().getName();
     }
 
-    @Named("mapFirstCategoryId")
-    default Long mapFirstCategoryId(List<Category> categories) {
-        if (categories == null || categories.isEmpty()) {
+    @Named("mapFirstCategorySnapshot")
+    default CategorySnapshot mapFirstCategorySnapshot(List<ProductCategory> productCategories) {
+        if (productCategories == null || productCategories.isEmpty()) {
             return null;
         }
-        return categories.getFirst().getId();
+        var category = productCategories.getFirst().getCategory();
+        return new CategorySnapshot(category.getId(), category.getName());
     }
 
-    @Named("mapAuditorId")
-    default AuditorResponse mapAuditorId(String idStr) {
-        if (idStr == null) return null;
-        try {
-            Long id = Long.parseLong(idStr);
-            return AuditorResponse.builder().id(id).build();
-        } catch (NumberFormatException e) {
-            return null;
+    @Named("mapAllCategorySnapshots")
+    default List<CategorySnapshot> mapAllCategorySnapshots(List<ProductCategory> productCategories) {
+        if (productCategories == null || productCategories.isEmpty()) {
+            return Collections.emptyList();
         }
+        return productCategories.stream()
+                .map(pc -> new CategorySnapshot(pc.getCategory().getId(), pc.getCategory().getName()))
+                .toList();
     }
+
+    // ============================================================================
+    // HELPER METHODS - Auditor Mapping
+    // ============================================================================
+
+    // Handled by AuditorMapper component via 'uses'
+
+    // ============================================================================
+    // HELPER METHODS - Asset Mapping
+    // ============================================================================
 
     AssetResponse toAssetResponse(ProductAsset asset);
 }

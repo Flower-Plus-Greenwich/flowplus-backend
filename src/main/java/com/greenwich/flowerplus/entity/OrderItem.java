@@ -31,8 +31,9 @@ public class OrderItem extends BaseTsidSoftDeleteEntity {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @Column(name = "product_id")
-    private Long productId; // NULL = custom order
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product; // NULL = custom order
 
     @Enumerated(EnumType.STRING)
     @Column(name = "item_type", length = 20, nullable = false)
@@ -60,20 +61,33 @@ public class OrderItem extends BaseTsidSoftDeleteEntity {
     // Nếu mà m kh muốn đụng vô logic tính toán subtotal ở PrePersit luôn thì có trò này
     // Tạo Constructor chứa các tham số CẦN THIẾT để tạo object, nó chỉ tạo builder cho mấy tham số này thôi
         @Builder
-        public OrderItem(Order order, Long productId, OrderItemType itemType,
+        public OrderItem(Order order, Product product, OrderItemType itemType,
                          Integer quantity, BigDecimal unitPrice, BigDecimal unitCost,
                          OrderItemCustomConfig customConfig) {
             this.order = order;
-            this.productId = productId;
+            this.product = product;
             this.itemType = itemType;
             this.quantity = quantity;
-            this.unitPrice = unitPrice;
-            this.subTotal = unitPrice.multiply(BigDecimal.valueOf(quantity));
             this.unitCost = unitCost;
             this.customConfig = customConfig;
+            // Nếu mà là Product thì gán giá
+            if (unitPrice != null) {
+                this.unitPrice = unitPrice;
+                this.subTotal = unitPrice.multiply(BigDecimal.valueOf(quantity));
+            } else {
+                // Trường hợp custom thì để 0, update sau
+                this.unitPrice = BigDecimal.ZERO;
+                this.subTotal = BigDecimal.ZERO;
+            }
         }
     // Khi này thì lúc dùng builder kh cần set subtotal nữa, mà khi gọi .build() nó sẽ tự tính luôn
-
+    public void updateCustomPrice(BigDecimal newPrice) {
+        if (!this.itemType.equals(OrderItemType.CUSTOM)) {
+            throw new IllegalStateException("Chỉ được cập nhật giá cho đơn hàng Custom");
+        }
+        this.unitPrice = newPrice;
+        this.subTotal = newPrice.multiply(BigDecimal.valueOf(this.quantity));
+    }
 
     public boolean isCustomOrder() {
         return OrderItemType.CUSTOM.equals(this.itemType);

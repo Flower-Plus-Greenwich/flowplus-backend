@@ -1,25 +1,13 @@
 meta {
-  name: searchPublic
+  name: Lấy danh sách thành phần của bó hoa
   type: http
   seq: 1
 }
 
 get {
-  url: {{baseUrl}}/api/v1/products?keyword=test&categoryId=aaaa&categorySlug=test-thoi&minPrice=1&maxPrice=10000000&status=ACTIVE&page=1&size=20&sort=newest
+  url: {{baseUrl}}/api/v1/products/{{productId}}/recipes
   body: none
-  auth: none
-}
-
-params:query {
-  keyword: test
-  categoryId: aaaa
-  categorySlug: test-thoi
-  minPrice: 1
-  maxPrice: 10000000
-  status: ACTIVE
-  page: 1
-  size: 20
-  sort: newest
+  auth: inherit
 }
 
 example {
@@ -27,11 +15,11 @@ example {
   description: OK
   
   request: {
-    url: {{baseUrl}}/api/v1/products
+    url: {{baseUrl}}/api/v1/products/:productId/recipes
     method: GET
     mode: none
-    params:query: {
-      request: 
+    params:path: {
+      productId: 
     }
   }
   
@@ -51,14 +39,12 @@ example {
         {
           "data": [
             {
-              "id": 0,
-              "name": "",
-              "slug": "",
-              "price": 0,
-              "categoryName": "",
-              "thumbnail": "",
-              "availableStock": 0,
-              "inStock": false
+              "materialId": 0,
+              "materialName": "",
+              "unit": "",
+              "costPrice": 0,
+              "quantityNeeded": 0,
+              "totalCost": 0
             }
           ],
           "message": "",

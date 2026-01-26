@@ -1,0 +1,106 @@
+meta {
+  name: API tạo general info product
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/v1/admin/products/draft
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Tạo mới sản phẩm 2",
+    "description": "Đây là dòng sản phẩm mới ra mắt",
+    "categoryId": "{{categoryId}}",
+    "basePrice": 150000
+  }
+}
+
+script:post-response {
+  var test = res.body.data;
+  
+  let idNewProduct = test.id
+  
+  bru.setEnvVar("newProductId", idNewProduct);
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/api/v1/products/draft
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "name": "",
+        "description": "",
+        "categoryId": "",
+        "basePrice": 0
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: */*
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          "data": {
+            "id": 0,
+            "name": "",
+            "slug": "",
+            "description": "",
+            "basePrice": 0,
+            "categoryId": 0,
+            "categoryName": "",
+            "status": "",
+            "assets": [
+              {
+                "id": "",
+                "url": "",
+                "publicId": "",
+                "type": "",
+                "isThumbnail": false,
+                "position": 0,
+                "metaData": {}
+              }
+            ],
+            "thumbnail": "",
+            "weight": 0,
+            "length": 0,
+            "width": 0,
+            "height": 0,
+            "isMakeToOrder": false
+          },
+          "message": "",
+          "pagination": {
+            "page": 0,
+            "size": 0,
+            "totalElements": 0,
+            "totalPages": 0
+          },
+          "error": {
+            "code": "",
+            "message": "",
+            "traceId": "",
+            "details": ""
+          }
+        }
+      '''
+    }
+  }
+}

@@ -1,25 +1,25 @@
 meta {
-  name: searchAdmin
+  name: Search sản phẩm bên phía Admin
   type: http
   seq: 3
 }
 
 get {
-  url: {{baseUrl}}/api/v1/products/admin?keyword=test&categoryId=aaaa&categorySlug=test-thoi&minPrice=1&maxPrice=10000000&status=ACTIVE&page=1&size=20&sort=newest
+  url: {{baseUrl}}/api/v1/admin/products?keyword&page=1&size=20&sort=newest
   body: none
-  auth: none
+  auth: inherit
 }
 
 params:query {
-  keyword: test
-  categoryId: aaaa
-  categorySlug: test-thoi
-  minPrice: 1
-  maxPrice: 10000000
-  status: ACTIVE
+  keyword: 
   page: 1
   size: 20
   sort: newest
+  ~categoryId: aaaa
+  ~categorySlug: test-thoi
+  ~minPrice: 1
+  ~maxPrice: 10000000
+  ~status: ACTIVE
 }
 
 example {
@@ -59,6 +59,10 @@ example {
               "categoryId": 0,
               "categoryName": "",
               "status": "",
+              "weight": 0,
+              "length": 0,
+              "width": 0,
+              "height": 0,
               "assets": [
                 {
                   "id": "",
@@ -78,7 +82,8 @@ example {
               },
               "updatedBy": {},
               "createdAt": "",
-              "updatedAt": ""
+              "updatedAt": "",
+              "makeToOrder": false
             }
           ],
           "message": "",

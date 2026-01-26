@@ -1,11 +1,10 @@
 package com.greenwich.flowerplus.entity;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.greenwich.flowerplus.common.constant.CommonConfig;
 import com.greenwich.flowerplus.common.enums.CategoryType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -41,20 +40,16 @@ public class Category extends BaseTsidSoftDeleteEntity {
     private Category parent;
 
     @OneToMany(mappedBy = "parent")
-    private List<Category> children;
+    @Builder.Default
+    private List<Category> children = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private CategoryType type;
 
-    // QUAN HỆ ĐÚNG: Category N-N Product
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "product_categories",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private List<Product> products;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ProductCategory> productCategories = new ArrayList<>();
 
     @Column(name = "is_active", nullable = false)
     @Builder.Default

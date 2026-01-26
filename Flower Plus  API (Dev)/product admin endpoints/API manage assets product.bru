@@ -1,17 +1,38 @@
 meta {
-  name: getProductById
+  name: API manage assets product
   type: http
-  seq: 2
+  seq: 6
 }
 
-get {
-  url: {{baseUrl}}/api/v1/products/:id
-  body: none
+patch {
+  url: {{baseUrl}}/api/v1/admin/products/:id/assets
+  body: json
   auth: inherit
 }
 
 params:path {
   id: 
+}
+
+body:json {
+  {
+    "operation": "ADD",
+    "assets": [
+      {
+        "id" : 1,
+        "url": "https://res.cloudinary.com/...",
+        "publicId": "flowerplus-product-images/abc123",
+        "type": "IMAGE",
+        "isThumbnail": false,
+        "position": 2
+      }
+    ],
+    "thumbnailAssetId": "1"
+  }
+}
+
+vars:pre-request {
+  id: {{productId3}}
 }
 
 example {
@@ -20,10 +41,37 @@ example {
   
   request: {
     url: {{baseUrl}}/api/v1/products/:id
-    method: GET
-    mode: none
+    method: PATCH
+    mode: json
     params:path: {
       id: 
+    }
+  
+    body:json: {
+      {
+        "name": "",
+        "description": "",
+        "careInstruction": "",
+        "basePrice": 0,
+        "categoryId": 0,
+        "slug": "",
+        "assets": [
+          {
+            "id": 0,
+            "url": "",
+            "publicId": "",
+            "type": "",
+            "isThumbnail": false,
+            "position": 0,
+            "metaData": {}
+          }
+        ],
+        "weight": 0,
+        "length": 0,
+        "width": 0,
+        "height": 0,
+        "isMakeToOrder": false
+      }
     }
   }
   
@@ -61,7 +109,12 @@ example {
                 "metaData": {}
               }
             ],
-            "thumbnail": ""
+            "thumbnail": "",
+            "weight": 0,
+            "length": 0,
+            "width": 0,
+            "height": 0,
+            "isMakeToOrder": false
           },
           "message": "",
           "pagination": {
