@@ -109,6 +109,7 @@ public enum ErrorCode {
     PRODUCT_DESCRIPTION_CONTAINS_BAD_WORDS(HttpStatus.BAD_REQUEST, "PRODUCT_011", "Product description contains inappropriate words"),
     PRODUCT_INVALID_NAME_FORMAT(HttpStatus.BAD_REQUEST, "PRODUCT_012", "Product name contains invalid characters"),
     PRODUCT_INVALID_DESCRIPTION_FORMAT(HttpStatus.BAD_REQUEST, "PRODUCT_013", "Product description contains invalid content"),
+    PRODUCT_EMPTY_CONTENT(HttpStatus.BAD_REQUEST, "PRODUCT_014", "Product empty content fields is not allowed"),
     PRODUCT_INVALID_PRICE(HttpStatus.BAD_REQUEST, "PRODUCT_014", "Product price must be positive"),
     PRODUCT_ORIGINAL_PRICE_LESS_THAN_BASE(HttpStatus.BAD_REQUEST, "PRODUCT_015", "Original price cannot be less than base price"),
 

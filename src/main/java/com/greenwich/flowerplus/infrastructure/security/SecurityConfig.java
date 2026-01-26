@@ -67,7 +67,7 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/auth/logout").authenticated();
                     
                     // Admin paths - formerly role based, now just authenticated (or handle authorization elsewhere if needed, but forbidden here)
-                    auth.requestMatchers("/api/v1/admin/**").hasAnyRole("SHOP_OWNER", "SHOP_STAFF");
+                    auth.requestMatchers("/api/v1/admin/**").hasAnyRole("SHOP_OWNER", "SHOP_STAFF", "ADMIN");
                     
                     // All other requests must be authenticated
                     auth.anyRequest().authenticated();

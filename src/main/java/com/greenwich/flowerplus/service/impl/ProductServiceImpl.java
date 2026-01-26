@@ -166,7 +166,7 @@ public class ProductServiceImpl implements ProductService {
             handleUpdateAssets(product, request.assets());
         }
 
-        Product savedProduct = productRepository.save(product);
+        Product savedProduct = productRepository.saveAndFlush(product);
         return productMapper.toProductResponse(savedProduct);
     }
 
@@ -192,7 +192,7 @@ public class ProductServiceImpl implements ProductService {
         //validate status is correct
         product.setStatus(request.productStatus());
 
-        return productMapper.toProductResponse(productRepository.save(product));
+        return productMapper.toProductResponse(productRepository.saveAndFlush(product));
     }
 
     // ============================================================================
@@ -584,6 +584,10 @@ public class ProductServiceImpl implements ProductService {
             return; // Allow null for partial updates
         }
 
+        if (name.isBlank() || name.contains("''") || name.contains("\"'\"")) {
+            throw new AppException(ErrorCode.PRODUCT_EMPTY_CONTENT);
+        }
+
         var result = TextValidationUtils.validateName(name);
         if (!result.isValid()) {
             if (result.errorMessage().contains("inappropriate")) {
@@ -598,6 +602,10 @@ public class ProductServiceImpl implements ProductService {
             return; // Allow null for partial updates
         }
 
+        if (description.isBlank() || description.contains("''") || description.contains("\"'\"")) {
+            throw new AppException(ErrorCode.PRODUCT_EMPTY_CONTENT);
+        }
+
         var result = TextValidationUtils.validateDescription(description);
         if (!result.isValid()) {
             if (result.errorMessage().contains("inappropriate")) {
@@ -607,9 +615,25 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    private static final BigDecimal MAX_PRICE = new BigDecimal("999999999999.99");
+
     private void validateProductPrice(BigDecimal basePrice, BigDecimal originalPrice) {
-        if (basePrice != null && basePrice.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new AppException(ErrorCode.PRODUCT_INVALID_PRICE);
+        if (basePrice != null) {
+            if (basePrice.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new AppException(ErrorCode.PRODUCT_INVALID_PRICE);
+            }
+            if (basePrice.compareTo(MAX_PRICE) > 0) {
+                throw new AppException(ErrorCode.INVALID_PRICE); // Using existing general price error
+            }
+        }
+
+        if (originalPrice != null) {
+            if (originalPrice.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new AppException(ErrorCode.PRODUCT_INVALID_PRICE);
+            }
+            if (originalPrice.compareTo(MAX_PRICE) > 0) {
+                throw new AppException(ErrorCode.INVALID_PRICE);
+            }
         }
 
         if (originalPrice != null

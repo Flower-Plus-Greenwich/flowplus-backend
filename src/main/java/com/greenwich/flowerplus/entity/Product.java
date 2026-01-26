@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLRestriction("deleted_at IS NULL")
-@SQLDelete(sql = "UPDATE products SET deleted_at = NOW() WHERE id = ?")
+@SQLDelete(sql = "UPDATE products SET deleted_at = NOW(), slug = CONCAT(slug, '-deleted-', id) WHERE id = ?")
 @Setter
 @Builder
 @Entity

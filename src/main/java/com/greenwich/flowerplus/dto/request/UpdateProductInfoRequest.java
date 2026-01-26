@@ -1,9 +1,12 @@
 package com.greenwich.flowerplus.dto.request;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.greenwich.flowerplus.common.constant.CommonConfig;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
@@ -12,7 +15,7 @@ import java.util.List;
 public record UpdateProductInfoRequest(
 
         @Schema(description = "Tên sản phẩm", example = "Giỏ hoa")
-        @Size(max = CommonConfig.PRODUCT_NAME_LENGTH, message = "{validation.product.name.size}")
+        @Size(max = CommonConfig.PRODUCT_NAME_LENGTH, message = "Product name cannot exceed {max} characters")
         String name,
 
         @Schema(description = "Mô tả sản phẩm", example = "Tổng hợp từ những loại hoa hồng.")
@@ -22,9 +25,15 @@ public record UpdateProductInfoRequest(
         String careInstruction,
 
         @Schema(description = "Giá gốc", example = "150000")
+        @PositiveOrZero(message = "Base price must be positive or zero")
+        @Digits(integer = 13, fraction = 2, message = "Base price must have at most 13 digits before and 2 digits after the decimal point")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
         BigDecimal basePrice,
 
         @Schema(description = "Giá niêm yết", example = "150000")
+        @PositiveOrZero(message = "Original price must be positive or zero")
+        @Digits(integer = 13, fraction = 2, message = "Original price must have at most 13 digits before and 2 digits after the decimal point")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
         BigDecimal originalPrice,
 
         @Schema(description = "Slug sản phẩm (URL-friendly)", example = "gio-hoa-valentine")

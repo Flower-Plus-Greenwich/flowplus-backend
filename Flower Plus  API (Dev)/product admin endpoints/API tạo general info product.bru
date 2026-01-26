@@ -12,11 +12,19 @@ post {
 
 body:json {
   {
-    "name": "",
-    "description": "",
-    "categoryId": "",
-    "basePrice": 0
+    "name": "Tạo mới sản phẩm 2",
+    "description": "Đây là dòng sản phẩm mới ra mắt",
+    "categoryId": "{{categoryId}}",
+    "basePrice": 150000
   }
+}
+
+script:post-response {
+  var test = res.body.data;
+  
+  let idNewProduct = test.id
+  
+  bru.setEnvVar("newProductId", idNewProduct);
 }
 
 example {

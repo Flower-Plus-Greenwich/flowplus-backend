@@ -1,7 +1,6 @@
 package com.greenwich.flowerplus.mapper;
 
 import com.greenwich.flowerplus.dto.response.AssetResponse;
-import com.greenwich.flowerplus.dto.response.AuditorResponse;
 import com.greenwich.flowerplus.dto.response.ProductListingDto;
 import com.greenwich.flowerplus.dto.response.ProductResponse;
 import com.greenwich.flowerplus.dto.response.ProductResponseAdmin;
@@ -22,7 +21,9 @@ import java.util.List;
  * 
  * Supports multiple category relationships via ProductCategory
  */
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", 
+        uses = {AuditorMapper.class},
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductMapper {
 
     // ============================================================================
@@ -37,6 +38,7 @@ public interface ProductMapper {
     @Mapping(target = "width", source = "shippingInfo.width")
     @Mapping(target = "height", source = "shippingInfo.height")
     @Mapping(target = "inStock", expression = "java(product.getPreparedQuantity() > 0 || product.isMakeToOrder())")
+    @Mapping(target = "isMakeToOrder", source = "makeToOrder")
     ProductResponse toProductResponse(Product product);
 
     // ============================================================================
@@ -60,12 +62,13 @@ public interface ProductMapper {
     @Mapping(target = "primaryCategory", source = "productCategories", qualifiedByName = "mapFirstCategorySnapshot")
     @Mapping(target = "categories", source = "productCategories", qualifiedByName = "mapAllCategorySnapshots")
     @Mapping(target = "assets", source = "assets")
-    @Mapping(target = "createdBy", source = "createdBy", qualifiedByName = "mapAuditorId")
-    @Mapping(target = "updatedBy", source = "updatedBy", qualifiedByName = "mapAuditorId")
+    @Mapping(target = "createdBy", source = "createdBy", qualifiedByName = "mapAuditor")
+    @Mapping(target = "updatedBy", source = "updatedBy", qualifiedByName = "mapAuditor")
     @Mapping(target = "weight", source = "shippingInfo.weightInGram")
     @Mapping(target = "length", source = "shippingInfo.length")
     @Mapping(target = "width", source = "shippingInfo.width")
     @Mapping(target = "height", source = "shippingInfo.height")
+    @Mapping(target = "isMakeToOrder", source = "makeToOrder")
     ProductResponseAdmin toAdminDto(Product product);
 
     // ============================================================================
@@ -103,16 +106,7 @@ public interface ProductMapper {
     // HELPER METHODS - Auditor Mapping
     // ============================================================================
 
-    @Named("mapAuditorId")
-    default AuditorResponse mapAuditorId(String idStr) {
-        if (idStr == null) return null;
-        try {
-            Long id = Long.parseLong(idStr);
-            return AuditorResponse.builder().id(id).build();
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
+    // Handled by AuditorMapper component via 'uses'
 
     // ============================================================================
     // HELPER METHODS - Asset Mapping

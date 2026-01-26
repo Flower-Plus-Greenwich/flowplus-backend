@@ -5,13 +5,9 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/api/v1/products/:productId/recipes
+  url: {{baseUrl}}/api/v1/products/{{productId}}/recipes
   body: none
   auth: inherit
-}
-
-params:path {
-  productId: 
 }
 
 example {
