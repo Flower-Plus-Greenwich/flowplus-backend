@@ -96,7 +96,7 @@ public enum ErrorCode {
     // --- Product ---
     SLUG_EXISTED(HttpStatus.CONFLICT, "SLUG_001", "Slug already exists"),
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT_001", "Product not found"),
-    VARIANT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT_002", "Variant not found"), PRODUCT_SKU_EXISTED(HttpStatus.CONFLICT, "PRODUCT_003" , "Product SKU already exists"),
+    PRODUCT_SKU_EXISTED(HttpStatus.CONFLICT, "PRODUCT_003" , "Product SKU already exists"),
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT_004", "Category not found"),
     CATEGORY_INACTIVE(HttpStatus.BAD_REQUEST, "PRODUCT_005", "Category inactive"),
     CATEGORY_NAME_EXISTS(HttpStatus.CONFLICT, "PRODUCT_006", "Category name exists"),

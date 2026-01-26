@@ -24,7 +24,7 @@ jobs:
       with:
         context: .
         push: true
-        tags: twinthang44/flowerplus-backend:latest
+        tags: twinthang44/flowerplus:latest
         
     - name: Trigger Render Deploy
       if: success()
