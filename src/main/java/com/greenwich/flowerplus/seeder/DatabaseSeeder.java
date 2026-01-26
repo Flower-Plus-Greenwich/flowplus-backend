@@ -28,6 +28,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final UserAccountRepository userAccountRepository;
     private final UserProfileRepository userProfileRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ProductDataSeeder productDataSeeder;
 
     @Value("${app.db-seeder:false}")
     private boolean isSeederEnabled;
@@ -46,14 +47,16 @@ public class DatabaseSeeder implements CommandLineRunner {
         Role roleCustomer = seedRole("CUSTOMER", "Standard customer role");
         Role roleShopOwner = seedRole("SHOP_OWNER", "Shop owner with full simplified admin access");
         Role roleShopStaff = seedRole("SHOP_STAFF", "Shop staff with limited admin access");
-
+        Role adminRole = seedRole("ADMIN", "Administrator with full Admin access");
         // 2. Seed Users
         seedUser("customer@flowerplus.com", "Customer User", roleCustomer);
         seedUser("owner@flowerplus.com", "Shop Owner", roleShopOwner);
         seedUser("staff@flowerplus.com", "Shop Staff", roleShopStaff);
-        
+        seedUser("admin@flowerplus.com", "Admin User", adminRole);
         // Optional: Seed an admin if needed, but user specifically asked for those 3.
         // seedUser("admin@flowerplus.com", "Super Admin", roleAdmin); 
+
+        productDataSeeder.seed();
 
         log.info("Database Seeder Completed Successfully!");
     }

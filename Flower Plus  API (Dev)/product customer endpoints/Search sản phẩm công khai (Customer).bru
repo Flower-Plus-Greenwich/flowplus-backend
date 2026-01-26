@@ -1,13 +1,13 @@
 meta {
-  name: searchAdmin
+  name: Search sản phẩm công khai (Customer)
   type: http
-  seq: 3
+  seq: 2
 }
 
 get {
-  url: {{baseUrl}}/api/v1/products/admin?keyword=test&categoryId=aaaa&categorySlug=test-thoi&minPrice=1&maxPrice=10000000&status=ACTIVE&page=1&size=20&sort=newest
+  url: {{baseUrl}}/api/v1/products?keyword=test&categoryId=aaaa&categorySlug=test-thoi&minPrice=1&maxPrice=10000000&status=ACTIVE&page=1&size=20&sort=newest
   body: none
-  auth: none
+  auth: inherit
 }
 
 params:query {
@@ -27,7 +27,7 @@ example {
   description: OK
   
   request: {
-    url: {{baseUrl}}/api/v1/products/admin
+    url: {{baseUrl}}/api/v1/products
     method: GET
     mode: none
     params:query: {
@@ -54,31 +54,11 @@ example {
               "id": 0,
               "name": "",
               "slug": "",
-              "description": "",
-              "basePrice": 0,
-              "categoryId": 0,
+              "price": 0,
               "categoryName": "",
-              "status": "",
-              "assets": [
-                {
-                  "id": "",
-                  "url": "",
-                  "publicId": "",
-                  "type": "",
-                  "isThumbnail": false,
-                  "position": 0,
-                  "metaData": {}
-                }
-              ],
-              "createdBy": {
-                "username": "",
-                "email": "",
-                "id": 0,
-                "avatarUrl": ""
-              },
-              "updatedBy": {},
-              "createdAt": "",
-              "updatedAt": ""
+              "thumbnail": "",
+              "availableStock": 0,
+              "inStock": false
             }
           ],
           "message": "",

@@ -3,6 +3,8 @@ package com.greenwich.flowerplus.entity;
 import com.greenwich.flowerplus.common.enums.MaterialType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 
@@ -10,6 +12,8 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SQLRestriction("deleted_at IS NULL")
+@SQLDelete(sql = "UPDATE materials SET deleted_at = NOW() WHERE id = ?")
 @Builder
 @Entity
 @Table(name = "materials")
@@ -34,6 +38,6 @@ public class Material extends BaseTsidSoftDeleteEntity {
     @Column(length = 20)
     private MaterialType type;
 
-    @OneToOne(mappedBy = "material", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "material", cascade = CascadeType.ALL)
     private MaterialStock materialStock;
 }

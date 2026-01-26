@@ -7,5 +7,14 @@ auth {
 }
 
 auth:bearer {
-  token: {{token}}
+  token: {{accessToken}}
+}
+
+vars:pre-request {
+  accessToken: 
+  baseUrl: http://localhost:8080
+  productId: 12113121324141254124124
+  productId2: 12113121324141254124124
+  productId3: 12113121324141254124124
+  productId4: 12113121324141254124124
 }

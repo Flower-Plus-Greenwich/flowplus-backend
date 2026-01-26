@@ -1,0 +1,106 @@
+meta {
+  name: Search sản phẩm bên phía Admin
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/v1/admin/products?keyword=test&categoryId=aaaa&categorySlug=test-thoi&minPrice=1&maxPrice=10000000&status=ACTIVE&page=1&size=20&sort=newest
+  body: none
+  auth: inherit
+}
+
+params:query {
+  keyword: test
+  categoryId: aaaa
+  categorySlug: test-thoi
+  minPrice: 1
+  maxPrice: 10000000
+  status: ACTIVE
+  page: 1
+  size: 20
+  sort: newest
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/api/v1/products/admin
+    method: GET
+    mode: none
+    params:query: {
+      request: 
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: */*
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          "data": [
+            {
+              "id": 0,
+              "name": "",
+              "slug": "",
+              "description": "",
+              "basePrice": 0,
+              "categoryId": 0,
+              "categoryName": "",
+              "status": "",
+              "weight": 0,
+              "length": 0,
+              "width": 0,
+              "height": 0,
+              "assets": [
+                {
+                  "id": "",
+                  "url": "",
+                  "publicId": "",
+                  "type": "",
+                  "isThumbnail": false,
+                  "position": 0,
+                  "metaData": {}
+                }
+              ],
+              "createdBy": {
+                "username": "",
+                "email": "",
+                "id": 0,
+                "avatarUrl": ""
+              },
+              "updatedBy": {},
+              "createdAt": "",
+              "updatedAt": "",
+              "makeToOrder": false
+            }
+          ],
+          "message": "",
+          "pagination": {
+            "page": 0,
+            "size": 0,
+            "totalElements": 0,
+            "totalPages": 0
+          },
+          "error": {
+            "code": "",
+            "message": "",
+            "traceId": "",
+            "details": ""
+          }
+        }
+      '''
+    }
+  }
+}

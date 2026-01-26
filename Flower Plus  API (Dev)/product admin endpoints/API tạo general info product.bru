@@ -1,17 +1,22 @@
 meta {
-  name: getProductById
+  name: API tạo general info product
   type: http
-  seq: 2
+  seq: 5
 }
 
-get {
-  url: {{baseUrl}}/api/v1/products/:id
-  body: none
+post {
+  url: {{baseUrl}}/api/v1/admin/products/draft
+  body: json
   auth: inherit
 }
 
-params:path {
-  id: 
+body:json {
+  {
+    "name": "",
+    "description": "",
+    "categoryId": "",
+    "basePrice": 0
+  }
 }
 
 example {
@@ -19,11 +24,16 @@ example {
   description: OK
   
   request: {
-    url: {{baseUrl}}/api/v1/products/:id
-    method: GET
-    mode: none
-    params:path: {
-      id: 
+    url: {{baseUrl}}/api/v1/products/draft
+    method: POST
+    mode: json
+    body:json: {
+      {
+        "name": "",
+        "description": "",
+        "categoryId": "",
+        "basePrice": 0
+      }
     }
   }
   
@@ -61,7 +71,12 @@ example {
                 "metaData": {}
               }
             ],
-            "thumbnail": ""
+            "thumbnail": "",
+            "weight": 0,
+            "length": 0,
+            "width": 0,
+            "height": 0,
+            "isMakeToOrder": false
           },
           "message": "",
           "pagination": {

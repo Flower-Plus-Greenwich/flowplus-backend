@@ -1,0 +1,136 @@
+meta {
+  name: API manage assets product
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/api/v1/admin/products/:id/assets
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: 
+}
+
+body:json {
+  {
+    "operation": "ADD",
+    "assets": [
+      {
+        "id" : 1,
+        "url": "https://res.cloudinary.com/...",
+        "publicId": "flowerplus-product-images/abc123",
+        "type": "IMAGE",
+        "isThumbnail": false,
+        "position": 2
+      }
+    ],
+    "thumbnailAssetId": "1"
+  }
+}
+
+vars:pre-request {
+  id: {{productId3}}
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/api/v1/products/:id
+    method: PATCH
+    mode: json
+    params:path: {
+      id: 
+    }
+  
+    body:json: {
+      {
+        "name": "",
+        "description": "",
+        "careInstruction": "",
+        "basePrice": 0,
+        "categoryId": 0,
+        "slug": "",
+        "assets": [
+          {
+            "id": 0,
+            "url": "",
+            "publicId": "",
+            "type": "",
+            "isThumbnail": false,
+            "position": 0,
+            "metaData": {}
+          }
+        ],
+        "weight": 0,
+        "length": 0,
+        "width": 0,
+        "height": 0,
+        "isMakeToOrder": false
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: */*
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          "data": {
+            "id": 0,
+            "name": "",
+            "slug": "",
+            "description": "",
+            "basePrice": 0,
+            "categoryId": 0,
+            "categoryName": "",
+            "status": "",
+            "assets": [
+              {
+                "id": "",
+                "url": "",
+                "publicId": "",
+                "type": "",
+                "isThumbnail": false,
+                "position": 0,
+                "metaData": {}
+              }
+            ],
+            "thumbnail": "",
+            "weight": 0,
+            "length": 0,
+            "width": 0,
+            "height": 0,
+            "isMakeToOrder": false
+          },
+          "message": "",
+          "pagination": {
+            "page": 0,
+            "size": 0,
+            "totalElements": 0,
+            "totalPages": 0
+          },
+          "error": {
+            "code": "",
+            "message": "",
+            "traceId": "",
+            "details": ""
+          }
+        }
+      '''
+    }
+  }
+}
