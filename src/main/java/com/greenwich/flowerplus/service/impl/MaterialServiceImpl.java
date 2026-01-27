@@ -11,13 +11,17 @@ import com.greenwich.flowerplus.repository.MaterialRepository;
 import com.greenwich.flowerplus.service.MaterialService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,8 +40,28 @@ public class MaterialServiceImpl implements MaterialService {
                 Sort.by("createdAt").descending()
         );
 
-        return materialRepository.search(request.getKeyword(), request.getType(), pageable)
+        Specification<Material> spec = buildSpecification(request);
+        return materialRepository.findAll(spec, pageable)
                 .map(materialMapper::toResponse);
+    }
+
+    private Specification<Material> buildSpecification(MaterialSearchRequest request) {
+        return (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (StringUtils.hasText(request.getKeyword())) {
+                String pattern = "%" + request.getKeyword().toLowerCase() + "%";
+                predicates.add(cb.like(cb.lower(root.get("name")), pattern));
+            }
+
+            if (request.getType() != null) {
+                predicates.add(cb.equal(root.get("type"), request.getType()));
+            }
+
+            return predicates.isEmpty()
+                    ? cb.conjunction()
+                    : cb.and(predicates.toArray(new Predicate[0]));
+        };
     }
 
     @Override
