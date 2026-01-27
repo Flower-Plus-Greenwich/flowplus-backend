@@ -34,6 +34,9 @@ public class ProductResponseAdmin {
     private Integer length;
     private Integer width;
     private Integer height;
+
+    private Integer preparedQuantity;
+    private boolean inStock;
     private boolean isMakeToOrder;
 
     // Danh sách assets (ảnh/video) của sản phẩm
