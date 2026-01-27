@@ -1,0 +1,142 @@
+meta {
+  name: API update general info
+  type: http
+  seq: 2
+}
+
+patch {
+  url: {{baseUrl}}/api/v1/admin/products/{{id}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Tạo mới sản phẩm updated",
+    "description": "Đây là dòng sản phẩm mới update",
+    "careInstruction": "`Đây là bài thử dấu này xem`",
+    "basePrice": 150000,
+    "originalPrice": 160000,
+    "slug": "",
+    "assets": [
+  //     {
+  //       "id": 0,
+  //       "url": "",
+  //       "publicId": "",
+  //       "type": "",
+  //       "isThumbnail": false,
+  //       "position": 0,
+  //       "metaData": {}
+  //     }
+    ],
+    "weight": 500,
+    "length": 60,
+    "width": 40,
+    "height": 20,
+    "isMakeToOrder": true
+  }
+}
+
+vars:pre-request {
+  id: {{newProductId}}
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/api/v1/products/:id
+    method: PATCH
+    mode: json
+    params:path: {
+      id: 
+    }
+  
+    body:json: {
+      {
+        "name": "",
+        "description": "",
+        "careInstruction": "",
+        "basePrice": 0,
+        "categoryId": 0,
+        "slug": "",
+        "assets": [
+          {
+            "id": 0,
+            "url": "",
+            "publicId": "",
+            "type": "",
+            "isThumbnail": false,
+            "position": 0,
+            "metaData": {}
+          }
+        ],
+        "weight": 0,
+        "length": 0,
+        "width": 0,
+        "height": 0,
+        "isMakeToOrder": false
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: */*
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          "data": {
+            "id": 0,
+            "name": "",
+            "slug": "",
+            "description": "",
+            "basePrice": 0,
+            "categoryId": 0,
+            "categoryName": "",
+            "status": "",
+            "assets": [
+              {
+                "id": "",
+                "url": "",
+                "publicId": "",
+                "type": "",
+                "isThumbnail": false,
+                "position": 0,
+                "metaData": {}
+              }
+            ],
+            "thumbnail": "",
+            "weight": 0,
+            "length": 0,
+            "width": 0,
+            "height": 0,
+            "isMakeToOrder": false
+          },
+          "message": "",
+          "pagination": {
+            "page": 0,
+            "size": 0,
+            "totalElements": 0,
+            "totalPages": 0
+          },
+          "error": {
+            "code": "",
+            "message": "",
+            "traceId": "",
+            "details": ""
+          }
+        }
+      '''
+    }
+  }
+}

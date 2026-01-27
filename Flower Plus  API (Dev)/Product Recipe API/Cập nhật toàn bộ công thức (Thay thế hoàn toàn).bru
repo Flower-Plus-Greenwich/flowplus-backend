@@ -1,0 +1,80 @@
+meta {
+  name: Cập nhật toàn bộ công thức (Thay thế hoàn toàn)
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/api/v1/products/:productId/recipes
+  body: json
+  auth: inherit
+}
+
+params:path {
+  productId: 
+}
+
+body:json {
+  [
+    {
+      "materialId": 0,
+      "quantityNeeded": 0
+    }
+  ]
+}
+
+example {
+  name: 200 Response
+  description: OK
+  
+  request: {
+    url: {{baseUrl}}/api/v1/products/:productId/recipes
+    method: PUT
+    mode: json
+    params:path: {
+      productId: 
+    }
+  
+    body:json: {
+      [
+        {
+          "materialId": 0,
+          "quantityNeeded": 0
+        }
+      ]
+    }
+  }
+  
+  response: {
+    headers: {
+      Content-Type: */*
+    }
+  
+    status: {
+      code: 200
+      text: OK
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+          "data": "",
+          "message": "",
+          "pagination": {
+            "page": 0,
+            "size": 0,
+            "totalElements": 0,
+            "totalPages": 0
+          },
+          "error": {
+            "code": "",
+            "message": "",
+            "traceId": "",
+            "details": ""
+          }
+        }
+      '''
+    }
+  }
+}

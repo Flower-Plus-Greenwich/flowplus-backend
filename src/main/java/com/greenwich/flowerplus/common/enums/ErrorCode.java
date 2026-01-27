@@ -104,6 +104,31 @@ public enum ErrorCode {
     CATEGORY_HAS_CHILDREN(HttpStatus.CONFLICT, "PRODUCT_008", "Category has children"),
     CATEGORY_PARENT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT_009", "Category parent not found"),
 
+    // --- Product Validation ---
+    PRODUCT_NAME_CONTAINS_BAD_WORDS(HttpStatus.BAD_REQUEST, "PRODUCT_010", "Product name contains inappropriate words"),
+    PRODUCT_DESCRIPTION_CONTAINS_BAD_WORDS(HttpStatus.BAD_REQUEST, "PRODUCT_011", "Product description contains inappropriate words"),
+    PRODUCT_INVALID_NAME_FORMAT(HttpStatus.BAD_REQUEST, "PRODUCT_012", "Product name contains invalid characters"),
+    PRODUCT_INVALID_DESCRIPTION_FORMAT(HttpStatus.BAD_REQUEST, "PRODUCT_013", "Product description contains invalid content"),
+    PRODUCT_EMPTY_CONTENT(HttpStatus.BAD_REQUEST, "PRODUCT_014", "Product empty content fields is not allowed"),
+    PRODUCT_INVALID_PRICE(HttpStatus.BAD_REQUEST, "PRODUCT_014", "Product price must be positive"),
+    PRODUCT_ORIGINAL_PRICE_LESS_THAN_BASE(HttpStatus.BAD_REQUEST, "PRODUCT_015", "Original price cannot be less than base price"),
+
+    // --- Product Assets ---
+    PRODUCT_ASSET_NOT_FOUND(HttpStatus.NOT_FOUND, "ASSET_001", "Product asset not found"),
+    PRODUCT_ASSET_INVALID_URL(HttpStatus.BAD_REQUEST, "ASSET_002", "Invalid asset URL"),
+    PRODUCT_ASSET_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "ASSET_003", "Maximum 10 assets allowed per product"),
+    PRODUCT_ASSET_DUPLICATE_URL(HttpStatus.CONFLICT, "ASSET_004", "Asset URL already exists for this product"),
+    PRODUCT_MUST_HAVE_THUMBNAIL(HttpStatus.BAD_REQUEST, "ASSET_005", "Product must have at least one thumbnail"),
+
+    // --- Product Categories ---
+    PRODUCT_CATEGORY_ALREADY_EXISTS(HttpStatus.CONFLICT, "PROD_CAT_001", "Product already has this category"),
+    PRODUCT_CATEGORY_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "PROD_CAT_002", "Maximum 5 categories allowed per product"),
+    PRODUCT_MUST_HAVE_CATEGORY(HttpStatus.BAD_REQUEST, "PROD_CAT_003", "Product must have at least one category"),
+    PRODUCT_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "PROD_CAT_004", "Product category association not found"),
+
+    // --- MATERIAL ----
+    MATERIAL_NOT_FOUND(HttpStatus.NOT_FOUND, "MATERIAL_001", "Material not found"),
+
     // --- CURRENCY ---
     UNSUPPORTED_CURRENCY(HttpStatus.BAD_REQUEST, "CURRENCY_001", "Unsupported currency"),
     INVALID_PRICE(HttpStatus.BAD_REQUEST, "CURRENCY_002", "Invalid price"),

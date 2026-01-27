@@ -4,7 +4,7 @@ services:
       - .env
     image: postgres:17-bookworm
     container_name: flowerplus_postgres17
-    restart: always
+    restart: no
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-thang}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-123456}

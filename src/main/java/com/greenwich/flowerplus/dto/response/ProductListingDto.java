@@ -1,10 +1,23 @@
 package com.greenwich.flowerplus.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.greenwich.flowerplus.dto.snapshot.CategorySnapshot;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+/**
+ * ProductListingDto - Lightweight DTO for product search results
+ * 
+ * Used for:
+ * - Storefront product listing/grid
+ * - Search results
+ * - Category page products
+ * 
+ * Optimized for performance with minimal data for list views.
+ * Supports multiple categories via CategorySnapshot list.
+ */
 @Getter
 @Setter
 @Builder
@@ -18,19 +31,23 @@ public class ProductListingDto {
     private String name;
     private String slug;
 
-    // Chỉ cần giá bán cơ bản (Frontend tự thêm chữ "Từ..." nếu cần)
+    // Base price for display (Frontend can add "From..." if needed)
     private BigDecimal price;
 
-    // Chỉ cần tên Category để hiển thị nhãn (VD: "Áo thun")
+    // Primary category name for quick display/labels
     private String categoryName;
+    
+    // All categories - for filtering UI and category badges
+    private List<CategorySnapshot> categories;
 
-    // QUAN TRỌNG: Chỉ trả về 1 link ảnh đại diện (Thumbnail)
-    // Thay vì trả về cả List<Asset> như ProductResponse
+    // Thumbnail image URL
     private String thumbnail;
 
-    // Có thể thêm rating nếu sau này làm review
-    // private Double averageRating;
-    // private Integer reviewCount;
+    // Stock information
     private Integer availableStock;
     private boolean inStock;
+    
+    // Rating info (optional for display)
+    private Double averageRating;
+    private Integer reviewCount;
 }
