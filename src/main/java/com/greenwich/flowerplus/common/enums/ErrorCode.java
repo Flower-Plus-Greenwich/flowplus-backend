@@ -181,7 +181,7 @@ public enum ErrorCode {
     INVENTORY_RESERVE_FAILED(HttpStatus.CONFLICT, "INVENTORY_005", "Inventory reserve failed"),
     INVENTORY_CONFIRM_FAILED(HttpStatus.CONFLICT, "INVENTORY_006", "Inventory confirm failed"),
     INVENTORY_RELEASE_FAILED(HttpStatus.CONFLICT, "INVENTORY_007", "Inventory release failed"),
-    
+    INVALID_TRANSACTION_TYPE(HttpStatus.BAD_REQUEST, "INVENTORY_008", "Invalid transaction type "),
     UNCATEGORIZED_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"PAYMENT_ERROR_002" , "Uncategorized exception");
 
 

@@ -10,9 +10,10 @@ import com.greenwich.flowerplus.entity.ProductRecipe;
 import com.greenwich.flowerplus.repository.MaterialRepository;
 import com.greenwich.flowerplus.repository.ProductRepository;
 import com.greenwich.flowerplus.service.ProductRecipeService;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
@@ -29,7 +30,7 @@ public class ProductRecipeServiceImpl implements ProductRecipeService {
     private final MaterialRepository materialRepository;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void updateProductRecipes(Long productId, List<ProductRecipeRequest> requests) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));

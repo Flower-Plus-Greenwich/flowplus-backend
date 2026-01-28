@@ -30,7 +30,7 @@ public class RoleServiceImpl implements RoleService {
     private final UserProfileRepository userProfileRepository;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void assignRole(Long userId, Long roleId) {
         UserAccount user = userAccountRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
@@ -43,7 +43,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void removeRole(Long userId, Long roleId) {
         UserAccount user = userAccountRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
@@ -56,7 +56,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public RoleResponse createRole(RoleRequest request) {
         if (roleRepository.findByName(request.name()).isPresent()) {
             throw new AppException(ErrorCode.RESOURCE_CONFLICT);
@@ -70,7 +70,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public RoleResponse updateRole(Long id, RoleRequest request) {
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
@@ -87,7 +87,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteRole(Long id) {
         if (!roleRepository.existsById(id)) {
             throw new AppException(ErrorCode.ROLE_NOT_FOUND);
