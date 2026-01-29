@@ -3,6 +3,8 @@ package com.greenwich.flowerplus.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,4 +24,5 @@ public class CartItem extends BaseTsidEntity {
     private Product product;
 
     private Integer quantity;
+
 }

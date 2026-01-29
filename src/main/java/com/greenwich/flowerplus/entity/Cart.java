@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,12 @@ public class Cart extends BaseTsidEntity{
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private UserProfile user;
+
+    @Column(name= "cart_token", unique = true)
+    private String cartToken;
+
+    @Column(name = "expire_at")
+    private Instant expireAt;
 
     @OneToMany(
             mappedBy = "cart",            // Map ngược lại biến 'cart' bên CartItem
