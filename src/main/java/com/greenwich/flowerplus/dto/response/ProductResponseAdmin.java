@@ -21,6 +21,7 @@ public class ProductResponseAdmin {
     private String name;
     private String slug;
     private String description;
+    private String careInstruction;
     private BigDecimal basePrice;
     private BigDecimal costPrice;
     private BigDecimal originalPrice;
@@ -35,7 +36,9 @@ public class ProductResponseAdmin {
     private Integer width;
     private Integer height;
 
-    private Integer preparedQuantity;
+    private Boolean isSeasonalPriority;
+    private String premakeInstruction;
+
     private boolean inStock;
     private boolean isMakeToOrder;
 

@@ -44,8 +44,8 @@ public class ProductListingDto {
     private String thumbnail;
 
     // Stock information
-    private Integer availableStock;
     private boolean inStock;
+    private Boolean isSeasonalPriority;
     
     // Rating info (optional for display)
     private Double averageRating;

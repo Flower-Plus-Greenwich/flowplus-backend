@@ -35,7 +35,7 @@ import java.util.List;
 @Slf4j
 @Validated
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/materials")
+@RequestMapping("/api/v1/admin/materials")
 @Tag(name = "Material Stock Management", description = "APIs for managing material inventory and stock")
 public class MaterialStockController {
 
@@ -167,10 +167,9 @@ public class MaterialStockController {
     }
 
     // ==================== SALES OPERATIONS (High Concurrency - Atomic Update) ====================
-
     @Operation(
             summary = "Deduct stock for order (High Concurrency)",
-            description = "Atomic deduction optimized for high-concurrency sales. Does not use database locks."
+            description = "Atomic deduction optimized for high-concurrency sales. Does not use database locks. *(API này chỉ dành cho staff thôi frontend làm ơn chú ý là ko dùng cái này nhé để thực hiện order cho staff)"
     )
     @PreAuthorize("hasAnyAuthority('ROLE_SHOP_OWNER', 'ROLE_SHOP_STAFF', 'ROLE_ADMIN')")
     @PostMapping("/{materialId}/stock/deduct-for-order")
@@ -184,6 +183,11 @@ public class MaterialStockController {
         return ResponseEntity.ok(ApiResult.success(null, "Stock deducted for order"));
     }
 
+
+    // ======================================================================
+    // SUPPORT OPERATIONS (Dành cho Staff xử lý đơn ngoài luồng/Chat)
+    // Lưu ý: KHÔNG dùng API này cho luồng Checkout tự động trên Website.
+    // ======================================================================
     @Operation(
             summary = "Reserve stock for pending order",
             description = "Reserve stock for a pending order. Reserved stock is not available for other orders."
@@ -200,6 +204,11 @@ public class MaterialStockController {
         return ResponseEntity.ok(ApiResult.success(null, "Stock reserved for order"));
     }
 
+
+    // ======================================================================
+    // SUPPORT OPERATIONS (Dành cho Staff xử lý đơn ngoài luồng/Chat)
+    // Lưu ý: KHÔNG dùng API này cho luồng Checkout tự động trên Website.
+    // ======================================================================
     @Operation(
             summary = "Release reserved stock",
             description = "Release previously reserved stock (e.g., when order is cancelled)."

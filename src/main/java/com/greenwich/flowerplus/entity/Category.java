@@ -30,7 +30,7 @@ public class Category extends BaseTsidSoftDeleteEntity {
     // Unique = true -> Đã có index ngầm, nhưng khai báo ở @Table cho tường minh
     // Rule 2: Slug bắt buộc unique để làm SEO URL, index luôn cho nhanh
     @Column(nullable = false, unique = true, length = CommonConfig.SLUG_LENGTH)
-    private String slug; // Cần thiết cho URL: /c/quan-ao-nam
+    private String slug; // Cần thiết cho URL:
 
     @Column(columnDefinition = "TEXT", length = CommonConfig.SHORT_DESC_LENGTH)
     private String description;

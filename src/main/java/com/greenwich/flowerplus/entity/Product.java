@@ -43,11 +43,18 @@ public class Product extends BaseTsidSoftDeleteEntity {
     @Column(nullable = false, unique = true, length = CommonConfig.SLUG_LENGTH)
     private String slug;
 
-    @Column(name = "prepared_quantity")
-    private int preparedQuantity;
-
     @Column(name = "is_make_to_order")
     private boolean isMakeToOrder;
+
+    // hàng thời vụ
+    // Đánh dấu sản phẩm này là chủ lực trong dịp lễ
+    // Khi bật lên = true -> Staff hiểu là "Cứ rảnh tay là bó cái này để sẵn lên kệ"
+    @Column(name = "is_seasonal_priority") // Hoặc is_premake_suggested
+    private Boolean isSeasonalPriority = false;
+
+    @Column(name = "premake_instruction")
+    private String premakeInstruction;
+// Ví dụ: "Dự kiến bán 200 bó, duy trì trên kệ ít nhất 20 bó"
 
     @Column(name = "selling_price", nullable = false, precision = 15, scale = 2)
     private BigDecimal basePrice;

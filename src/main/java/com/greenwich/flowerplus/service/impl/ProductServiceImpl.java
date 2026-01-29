@@ -115,7 +115,6 @@ public class ProductServiceImpl implements ProductService {
                 .careInstruction(null)
                 .thumbnail(null)
                 .slug(slug)
-                .preparedQuantity(0)
                 .isMakeToOrder(false)
 
                 .basePrice(request.basePrice())

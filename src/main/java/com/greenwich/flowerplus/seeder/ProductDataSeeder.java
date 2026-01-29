@@ -158,7 +158,6 @@ public class ProductDataSeeder {
                 .costPrice(totalCost)
                 .originalPrice(basePrice.multiply(new BigDecimal("1.2")))
                 .status(ProductStatus.ACTIVE)
-                .preparedQuantity(10)
                 .isMakeToOrder(true)
                 .thumbnail(imageUrls.get(0))
                 .reviewCount(0)
