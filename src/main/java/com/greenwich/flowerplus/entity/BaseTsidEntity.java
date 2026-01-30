@@ -3,6 +3,7 @@ package com.greenwich.flowerplus.entity;
 import com.greenwich.flowerplus.common.utils.TsidUtils;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
@@ -17,6 +18,11 @@ public abstract class BaseTsidEntity extends BaseAuditEntity<Long> {
 
     @Id
     private Long id;
+
+    // Optimistic Locking: Prevents "Lost Update" when multiple users edit the same record
+    // JPA automatically checks this version on update and throws OptimisticLockException if stale
+    @Version
+    private Long version;
 
 
     // Override cái hook của cha

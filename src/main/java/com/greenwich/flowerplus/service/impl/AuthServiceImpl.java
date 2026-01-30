@@ -19,7 +19,7 @@ import com.greenwich.flowerplus.service.RefreshTokenService;
 import com.greenwich.flowerplus.service.TokenBlacklistService;
 import com.greenwich.flowerplus.service.TokenService;
 import com.greenwich.flowerplus.service.validator.AccountAuthenticationValidator;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +29,7 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -54,7 +55,7 @@ public class AuthServiceImpl implements AuthService {
     private final com.greenwich.flowerplus.repository.RefreshTokenRepository refreshTokenRepository;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public AuthResponse login(LoginRequest request) {
         try {
             // Authenticate with email and password
@@ -100,7 +101,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public AuthResponse register(RegisterRequest request) {
         // Validate password match
         if (!request.getPassword().equals(request.getConfirmPassword())) {
@@ -171,7 +172,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void logout(String accessToken, String refreshToken) {
         // Revoke Access Token (Blacklist)
         if (accessToken != null && !accessToken.isBlank()) {
@@ -190,7 +191,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public AuthResponse refreshToken(String refreshTokenStr) {
         if (refreshTokenStr == null || refreshTokenStr.isBlank()) {
             throw new AppException(ErrorCode.TOKEN_INVALID);

@@ -80,7 +80,7 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public MaterialResponse createMaterial(MaterialRequest request) {
         Material material = materialMapper.toEntity(request);
         material = materialRepository.save(material);
@@ -89,7 +89,7 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public MaterialResponse updateMaterial(Long id, MaterialRequest request) {
         Material material = materialRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.MATERIAL_NOT_FOUND));
@@ -101,7 +101,7 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteMaterial(Long id) {
         if (!materialRepository.existsById(id)) {
             throw new AppException(ErrorCode.MATERIAL_NOT_FOUND);

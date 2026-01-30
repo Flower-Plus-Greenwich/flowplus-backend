@@ -5,11 +5,11 @@ import com.greenwich.flowerplus.entity.RefreshToken;
 import com.greenwich.flowerplus.entity.UserAccount;
 import com.greenwich.flowerplus.repository.RefreshTokenRepository;
 import com.greenwich.flowerplus.service.RefreshTokenService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 
@@ -24,7 +24,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private Long refreshTokenDurationMs;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public RefreshToken saveRefreshToken(UserAccount user, String tokenString) {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
@@ -54,7 +54,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void revokeRefreshToken(String rawToken) {
         refreshTokenRepository.findByToken(rawToken).ifPresent(token -> {
             token.setRevoked(true);
@@ -64,13 +64,13 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteByToken(String rawToken) {
         refreshTokenRepository.findByToken(rawToken).ifPresent(refreshTokenRepository::delete);
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void revokeAllUserTokens(UserAccount user) {
         refreshTokenRepository.revokeAllByUser(user);
         log.info("All refresh tokens revoked for user: {}", user.getEmail());

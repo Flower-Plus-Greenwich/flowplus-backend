@@ -9,8 +9,8 @@ app:
 jwt:
   key:
     id: "flowerplus-key-2025"
-    private-path: classpath:certs/private_key.pem
-    public-path: classpath:certs/public_key.pem
+    private-path: /etc/secrets/private_key.pem
+    public-path: /etc/secrets/public_key.pem
   refresh:
     expiration: 2592000000 # 30 days in milliseconds
 

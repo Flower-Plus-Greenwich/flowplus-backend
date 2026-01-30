@@ -83,7 +83,7 @@ public class ProductServiceImpl implements ProductService {
     // ============================================================================
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ProductResponseAdmin createGeneralInfoProduct(CreateGeneralInfoProductRequest request) {
         log.info("Creating draft product: {}", request.name());
 
@@ -115,7 +115,6 @@ public class ProductServiceImpl implements ProductService {
                 .careInstruction(null)
                 .thumbnail(null)
                 .slug(slug)
-                .preparedQuantity(0)
                 .isMakeToOrder(false)
 
                 .basePrice(request.basePrice())
@@ -145,7 +144,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ProductResponseAdmin updateProduct(Long id, UpdateProductInfoRequest request) {
         log.info("Updating product id: {}", id);
 
@@ -171,7 +170,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void removeProduct(Long id) {
         log.info("Removing product id: {}", id);
 
@@ -182,7 +181,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ProductResponseAdmin updateProductStatus(Long id, UpdateProductStatusRequest request) {
         log.info("Updating product status: {}", id);
 
@@ -293,7 +292,7 @@ public class ProductServiceImpl implements ProductService {
     // ============================================================================
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ProductResponseAdmin manageProductAssets(Long productId, ProductAssetRequest request) {
         log.info("Managing assets for product id: {}, operation: {}", productId, request.operation());
 
@@ -462,7 +461,7 @@ public class ProductServiceImpl implements ProductService {
     // ============================================================================
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ProductResponseAdmin manageProductCategories(Long productId, ProductCategoryRequest request) {
         log.info("Managing categories for product id: {}, operation: {}", productId, request.operation());
 

@@ -37,22 +37,17 @@ public interface ProductMapper {
     @Mapping(target = "length", source = "shippingInfo.length")
     @Mapping(target = "width", source = "shippingInfo.width")
     @Mapping(target = "height", source = "shippingInfo.height")
-    @Mapping(target = "inStock", expression = "java(product.getPreparedQuantity() > 0 || product.isMakeToOrder())")
-    @Mapping(target = "isMakeToOrder", source = "makeToOrder")
+    @Mapping(target = "inStock", source = "makeToOrder")
     ProductResponse toProductResponse(Product product);
 
     // ============================================================================
     // LIGHTWEIGHT LISTING DTO (for search results - storefront)
     // ============================================================================
 
-    @Mapping(target = "thumbnail", source = "thumbnail")
     @Mapping(target = "price", source = "basePrice")
     @Mapping(target = "categoryName", source = "productCategories", qualifiedByName = "mapFirstCategoryName")
     @Mapping(target = "categories", source = "productCategories", qualifiedByName = "mapAllCategorySnapshots")
-    @Mapping(target = "availableStock", source = "preparedQuantity")
-    @Mapping(target = "inStock", expression = "java(product.getPreparedQuantity() > 0 || product.isMakeToOrder())")
-    @Mapping(target = "averageRating", source = "averageRating")
-    @Mapping(target = "reviewCount", source = "reviewCount")
+    @Mapping(target = "inStock", source = "makeToOrder")
     ProductListingDto toListingDto(Product product);
 
     // ============================================================================
@@ -68,8 +63,7 @@ public interface ProductMapper {
     @Mapping(target = "length", source = "shippingInfo.length")
     @Mapping(target = "width", source = "shippingInfo.width")
     @Mapping(target = "height", source = "shippingInfo.height")
-    @Mapping(target = "inStock", expression = "java(product.getPreparedQuantity() > 0 || product.isMakeToOrder())")
-    @Mapping(target = "isMakeToOrder", source = "makeToOrder")
+    @Mapping(target = "inStock", source = "makeToOrder")
     ProductResponseAdmin toAdminDto(Product product);
 
     // ============================================================================

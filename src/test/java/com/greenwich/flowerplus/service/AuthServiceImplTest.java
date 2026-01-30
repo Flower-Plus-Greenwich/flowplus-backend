@@ -1,4 +1,4 @@
-package com.greenwich.flowerplus.service.impl;
+package com.greenwich.flowerplus.service;
 
 import com.greenwich.flowerplus.common.enums.ErrorCode;
 import com.greenwich.flowerplus.common.exception.AppException;
@@ -15,6 +15,8 @@ import com.greenwich.flowerplus.repository.UserProfileRepository;
 import com.greenwich.flowerplus.service.RefreshTokenService;
 import com.greenwich.flowerplus.service.TokenBlacklistService;
 import com.greenwich.flowerplus.service.TokenService;
+import com.greenwich.flowerplus.service.impl.AuthServiceImpl;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

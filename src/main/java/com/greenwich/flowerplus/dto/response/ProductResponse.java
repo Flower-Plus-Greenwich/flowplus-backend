@@ -50,8 +50,11 @@ public record ProductResponse(
         Integer width,
         Integer height,
         
+        // Seasonal info
+        Boolean isSeasonalPriority,
+        String premakeInstruction,
+        
         // Stock info
-        Integer preparedQuantity,
         boolean isMakeToOrder,
         boolean inStock,
         

@@ -23,7 +23,7 @@ import java.util.List;
 @Slf4j
 @Validated
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/materials")
+@RequestMapping("/api/v1/admin/materials")
 @Tag(name = "Material Management", description = "APIs for managing raw materials (Master Data)")
 public class MaterialController {
 

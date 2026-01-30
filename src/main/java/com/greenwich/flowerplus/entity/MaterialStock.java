@@ -3,6 +3,8 @@ package com.greenwich.flowerplus.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 
 @Getter
 @Setter
@@ -24,9 +26,12 @@ public class MaterialStock extends BaseTsidEntity {
     @Column(name = "reserved_quantity", nullable = false)
     private Integer reservedQuantity;
 
-    @Column(name = "opening_balance", nullable = false)
+    // Giá vốn trung bình (Moving Average Cost)
+    // Cực kỳ quan trọng để tính lãi lỗ.
+    // Công thức: ((Giá cũ * Tồn cũ) + (Giá nhập mới * Lượng nhập mới)) / (Tồn cũ + Lượng nhập mới)
+    @Column(name = "cost_price", nullable = false, precision = 15, scale = 2)
     @Builder.Default
-    private Integer openingBalance = 0;
+    private BigDecimal costPrice = BigDecimal.ZERO;
 
     @Column(name = "reorder_level", columnDefinition = "INTEGER DEFAULT 10")
     @Builder.Default
@@ -34,5 +39,9 @@ public class MaterialStock extends BaseTsidEntity {
 
     public int getAvailableStock() {
         return this.quantity - this.reservedQuantity;
+    }
+
+    public BigDecimal getTotalValue() {
+        return this.costPrice.multiply(BigDecimal.valueOf(this.quantity));
     }
 }
