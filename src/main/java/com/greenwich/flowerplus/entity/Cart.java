@@ -17,13 +17,13 @@ import java.util.List;
 @Builder
 public class Cart extends BaseTsidEntity{
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JoinColumn(name = "user_id", unique = true)
     private UserProfile user;
 
     @Column(name= "cart_token", unique = true)
     private String cartToken;
 
-    @Column(name = "expire_at")
+    @Column(name = "expires_at")
     private Instant expireAt;
 
     @OneToMany(
