@@ -1,7 +1,9 @@
 package com.greenwich.flowerplus.entity;
 
 import com.greenwich.flowerplus.common.constant.CommonConfig;
+import com.greenwich.flowerplus.common.enums.ErrorCode;
 import com.greenwich.flowerplus.common.enums.ProductStatus;
+import com.greenwich.flowerplus.common.exception.DomainException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -10,6 +12,7 @@ import org.hibernate.annotations.SQLRestriction;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
@@ -24,6 +27,8 @@ import java.util.List;
         @Index(name = "idx_product_name", columnList = "name")
 })
 public class Product extends BaseTsidSoftDeleteEntity {
+
+    private static final int MAX_CATEGORIES = 5;
 
     //general infor
     @Column(nullable = false, length = CommonConfig.PRODUCT_NAME_LENGTH)
@@ -98,16 +103,100 @@ public class Product extends BaseTsidSoftDeleteEntity {
     }
 
     public void addCategory(Category category) {
+        // 1. Validate Business Rule: Category phải Active mới được thêm
+        if (!Boolean.TRUE.equals(category.getIsActive())) {
+            throw new DomainException(ErrorCode.CATEGORY_INACTIVE.getMessage());
+        }
+
+        // 2. Validate Invariant: Không quá 5 danh mục
+        if (this.productCategories.size() >= MAX_CATEGORIES) {
+            throw new DomainException(ErrorCode.PRODUCT_CATEGORY_LIMIT_EXCEEDED.getMessage());
+        }
+
+        // 3. Validate Duplicate: Đã có rồi thì thôi (Idempotent)
+        boolean exists = this.productCategories.stream()
+                .anyMatch(pc -> pc.getCategory().getId().equals(category.getId()));
+
+        if (exists) {
+            return; // Hoặc throw exception tùy gu của bạn
+        }
+
+        // 4. Action: Thực hiện liên kết
         ProductCategory productCategory = ProductCategory.builder()
                 .product(this)
                 .category(category)
                 .build();
-        productCategories.add(productCategory);
-        category.getProductCategories().add(productCategory);
+
+        this.productCategories.add(productCategory);
+        // Lưu ý: Không cần add ngược vào category.getProductCategories() nếu không cần thiết
+        // để tránh Lazy Loading Exception nếu list bên kia quá lớn.
     }
 
     public void removeCategory(Category category) {
-        productCategories.removeIf(pc -> pc.getCategory().equals(category));
-        category.getProductCategories().removeIf(pc -> pc.getProduct().equals(this));
+        // 1. Validate Invariant: Sản phẩm phải thuộc ít nhất 1 danh mục
+        if (this.productCategories.size() <= 1) {
+            throw new DomainException(ErrorCode.PRODUCT_MUST_HAVE_CATEGORY.getMessage());
+        }
+
+        // 2. Action: Xóa (Dùng iterator hoặc removeIf)
+        boolean removed = this.productCategories.removeIf(pc ->
+                pc.getCategory().getId().equals(category.getId())
+        );
+
+        if (!removed) {
+            throw new DomainException(ErrorCode.PRODUCT_CATEGORY_NOT_FOUND.getMessage());
+        }
+    }
+
+    public void removeAllCategories() {
+        // Validate: Không cho phép xóa sạch (nếu rule yêu cầu giữ ít nhất 1)
+        throw new DomainException(ErrorCode.PRODUCT_MUST_HAVE_CATEGORY.getMessage());
+    }
+
+    /**
+     * Activate product with business rule validation.
+     * Product must have: thumbnail, at least one category, valid price.
+     */
+    public void activate() {
+        if (this.thumbnail == null || this.thumbnail.isBlank()) {
+            throw new DomainException("Product must have a thumbnail to be activated");
+        }
+        if (this.productCategories.isEmpty()) {
+            throw new DomainException(ErrorCode.PRODUCT_MUST_HAVE_CATEGORY.getMessage());
+        }
+        if (this.basePrice == null || this.basePrice.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new DomainException("Product must have a valid price to be activated");
+        }
+        this.status = ProductStatus.ACTIVE;
+    }
+    /**
+     * Set to draft status (no validation needed).
+     */
+    public void toDraft() {
+        this.status = ProductStatus.DRAFT;
+    }
+    /**
+     * Deactivate product (can always be deactivated).
+     */
+    public void deactivate() {
+        this.status = ProductStatus.INACTIVE;
+    }
+
+    public void updateBasePrice(BigDecimal newPrice) {
+        Objects.requireNonNull(newPrice, "Base price cannot be null");
+        if (newPrice.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new DomainException("Base price must be positive");
+        }
+        if (this.costPrice != null && newPrice.compareTo(this.costPrice) < 0) {
+            throw new DomainException("Base price cannot be less than cost price (margin violation)");
+        }
+        this.basePrice = newPrice;
+    }
+    public void updateCostPrice(BigDecimal newCost) {
+        Objects.requireNonNull(newCost, "Cost price cannot be null");
+        if (newCost.compareTo(BigDecimal.ZERO) < 0) {
+            throw new DomainException("Cost price cannot be negative");
+        }
+        this.costPrice = newCost;
     }
 }

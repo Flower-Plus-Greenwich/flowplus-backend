@@ -1,6 +1,9 @@
 package com.greenwich.flowerplus.entity;
 import com.greenwich.flowerplus.common.constant.CommonConfig;
 import com.greenwich.flowerplus.common.enums.CategoryType;
+import com.greenwich.flowerplus.common.enums.ErrorCode;
+import com.greenwich.flowerplus.common.enums.ProductStatus;
+import com.greenwich.flowerplus.common.exception.DomainException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,6 +38,9 @@ public class Category extends BaseTsidSoftDeleteEntity {
     @Column(columnDefinition = "TEXT", length = CommonConfig.SHORT_DESC_LENGTH)
     private String description;
 
+    @Column(name = "thumbnail")
+    private String thumbnail;   
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Category parent;
@@ -47,12 +53,40 @@ public class Category extends BaseTsidSoftDeleteEntity {
     @Column(length = 20)
     private CategoryType type;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category")
     @Builder.Default
     private List<ProductCategory> productCategories = new ArrayList<>();
 
     @Column(name = "is_active", nullable = false)
     @Builder.Default
     private Boolean isActive = true;
+
+    /**
+     * Check if this category can be safely deleted.
+     * @return true if no products reference this category
+     */
+    public boolean canBeDeleted() {
+        return this.productCategories.isEmpty() && this.children.isEmpty();
+    }
+    /**
+     * Deactivate this category with business rule validation.
+     * @throws DomainException if active products use this category
+     */
+    public void deactivate() {
+        if (!this.productCategories.isEmpty()) {
+            boolean hasActiveProducts = this.productCategories.stream()
+                    .anyMatch(pc -> pc.getProduct().getStatus() == ProductStatus.ACTIVE);
+            if (hasActiveProducts) {
+                throw new DomainException(ErrorCode.CATEGORY_HAS_ACTIVE_PRODUCTS.getMessage());
+            }
+        }
+        this.isActive = false;
+    }
+    /**
+     * Activate this category.
+     */
+    public void activate() {
+        this.isActive = true;
+    }
 
 }
