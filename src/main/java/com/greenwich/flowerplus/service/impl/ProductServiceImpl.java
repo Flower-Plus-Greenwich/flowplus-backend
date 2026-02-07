@@ -3,6 +3,7 @@ package com.greenwich.flowerplus.service.impl;
 import com.greenwich.flowerplus.common.enums.ErrorCode;
 import com.greenwich.flowerplus.common.enums.ProductStatus;
 import com.greenwich.flowerplus.common.exception.AppException;
+import com.greenwich.flowerplus.common.exception.DomainException;
 import com.greenwich.flowerplus.common.utils.SlugUtils;
 import com.greenwich.flowerplus.common.utils.TextValidationUtils;
 import com.greenwich.flowerplus.dto.request.*;
@@ -190,7 +191,12 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
         //validate status is correct
-        product.setStatus(request.productStatus());
+        switch (request.productStatus()) {
+            case ACTIVE -> product.activate();     // Domain validates requirements
+            case DRAFT -> product.toDraft();
+            case INACTIVE -> product.deactivate();
+            default -> throw new DomainException("Invalid product status");
+        }
 
         return productMapper.toAdminDto(productRepository.saveAndFlush(product));
     }
@@ -218,15 +224,6 @@ public class ProductServiceImpl implements ProductService {
         if (request.isMakeToOrder() != null) {
             product.setMakeToOrder(request.isMakeToOrder());
         }
-    }
-
-    private void updateCategory(Product product, Long categoryId) {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
-        
-        // In this simple implementation, we replace all categories with the new one
-        product.getProductCategories().clear();
-        product.addCategory(category);
     }
 
     private void updateShippingInfo(Product product, UpdateProductInfoRequest request) {
@@ -482,41 +479,21 @@ public class ProductServiceImpl implements ProductService {
 
     private void addCategories(Product product, List<Long> categoryIds) {
         if (categoryIds == null || categoryIds.isEmpty()) {
-            throw new AppException(ErrorCode.INVALID_REQUEST, "Category IDs cannot be empty for ADD operation");
+            throw new AppException(ErrorCode.INVALID_REQUEST, "Category IDs required");
         }
 
-        // Get existing category IDs
-        Set<Long> existingCategoryIds = product.getProductCategories().stream()
-                .map(pc -> pc.getCategory().getId())
-                .collect(Collectors.toSet());
-
-        // Check limit (max 5 categories)
-        int newCount = (int) categoryIds.stream()
-                .filter(id -> !existingCategoryIds.contains(id))
-                .count();
-
-        if (existingCategoryIds.size() + newCount > 5) {
-            throw new AppException(ErrorCode.PRODUCT_CATEGORY_LIMIT_EXCEEDED);
+        List<Category> categories = categoryRepository.findAllById(categoryIds);
+        if (categories.size() != categoryIds.size()) {
+            throw new AppException(ErrorCode.CATEGORY_NOT_FOUND);
         }
 
-        for (Long categoryId : categoryIds) {
-            if (existingCategoryIds.contains(categoryId)) {
-                log.debug("Category {} already exists for product {}, skipping", categoryId, product.getId());
-                continue;
+        // Let domain handle all business rules
+        for (Category category : categories) {
+            try {
+                product.addCategory(category);
+            } catch (DomainException e) {
+                throw new AppException(ErrorCode.DOMAIN_VALIDATION_ERROR, e.getMessage());
             }
-
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
-
-            if (!Boolean.TRUE.equals(category.getIsActive())) {
-                throw new AppException(ErrorCode.CATEGORY_INACTIVE);
-            }
-
-            ProductCategory productCategory = ProductCategory.builder()
-                    .product(product)
-                    .category(category)
-                    .build();
-            product.getProductCategories().add(productCategory);
         }
     }
 
@@ -548,31 +525,29 @@ public class ProductServiceImpl implements ProductService {
             throw new AppException(ErrorCode.PRODUCT_CATEGORY_LIMIT_EXCEEDED);
         }
 
+        // Fetch all categories first to validate they exist
+        List<Category> categories = categoryRepository.findAllById(categoryIds);
+        if (categories.size() != categoryIds.size()) {
+            throw new AppException(ErrorCode.CATEGORY_NOT_FOUND);
+        }
+
         // Clear existing categories
         product.getProductCategories().clear();
 
-        // Add new categories
-        for (Long categoryId : categoryIds) {
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
-
-            if (!Boolean.TRUE.equals(category.getIsActive())) {
-                throw new AppException(ErrorCode.CATEGORY_INACTIVE);
+        // Add new categories using domain method (handles active check, duplicate check)
+        for (Category category : categories) {
+            try {
+                product.addCategory(category);
+            } catch (DomainException e) {
+                throw new AppException(ErrorCode.DOMAIN_VALIDATION_ERROR, e.getMessage());
             }
-
-            ProductCategory productCategory = ProductCategory.builder()
-                    .product(product)
-                    .category(category)
-                    .build();
-            product.getProductCategories().add(productCategory);
         }
     }
 
     private void clearCategories(Product product) {
         // Cannot clear all categories - product must have at least one
-        if (product.getProductCategories().isEmpty()) {
-            throw new AppException(ErrorCode.PRODUCT_MUST_HAVE_CATEGORY);
-        }
+        // This operation is always invalid per business rule
+        throw new AppException(ErrorCode.PRODUCT_MUST_HAVE_CATEGORY);
     }
 
     // ============================================================================

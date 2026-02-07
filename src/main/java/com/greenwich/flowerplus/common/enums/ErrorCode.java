@@ -103,6 +103,10 @@ public enum ErrorCode {
     CATEGORY_SLUG_EXISTS(HttpStatus.CONFLICT, "PRODUCT_007", "Category slug exists"),
     CATEGORY_HAS_CHILDREN(HttpStatus.CONFLICT, "PRODUCT_008", "Category has children"),
     CATEGORY_PARENT_NOT_FOUND(HttpStatus.NOT_FOUND, "PRODUCT_009", "Category parent not found"),
+    CATEGORY_HAS_ACTIVE_PRODUCTS(HttpStatus.CONFLICT, "PRODUCT_010", "Category has active products"),
+
+    // --- DOMAIN ---
+    DOMAIN_VALIDATION_ERROR(HttpStatus.CONFLICT, "DOMAIN_001", "Domain validation failed"),
 
     // --- Product Validation ---
     PRODUCT_NAME_CONTAINS_BAD_WORDS(HttpStatus.BAD_REQUEST, "PRODUCT_010", "Product name contains inappropriate words"),
@@ -181,8 +185,13 @@ public enum ErrorCode {
     INVENTORY_RESERVE_FAILED(HttpStatus.CONFLICT, "INVENTORY_005", "Inventory reserve failed"),
     INVENTORY_CONFIRM_FAILED(HttpStatus.CONFLICT, "INVENTORY_006", "Inventory confirm failed"),
     INVENTORY_RELEASE_FAILED(HttpStatus.CONFLICT, "INVENTORY_007", "Inventory release failed"),
+<<<<<<< Updated upstream
     
     UNCATEGORIZED_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"PAYMENT_ERROR_002" , "Uncategorized exception");
+=======
+    INVALID_TRANSACTION_TYPE(HttpStatus.BAD_REQUEST, "INVENTORY_008", "Invalid transaction type "),
+    UNCATEGORIZED_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR,"PAYMENT_ERROR_002" , "Uncategorized exception"),;
+>>>>>>> Stashed changes
 
 
     // ... (rest of simple constructor)
