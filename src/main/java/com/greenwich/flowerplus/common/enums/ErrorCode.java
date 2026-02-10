@@ -132,6 +132,10 @@ public enum ErrorCode {
 
     // --- MATERIAL ----
     MATERIAL_NOT_FOUND(HttpStatus.NOT_FOUND, "MATERIAL_001", "Material not found"),
+    MATERIAL_INVALID_TYPE(HttpStatus.BAD_REQUEST, "MATERIAL_002", "Invalid material type"),
+
+    // --- STYLE ----
+    STYLE_NOT_FOUND(HttpStatus.NOT_FOUND, "STYLE_001", "Arrangement style not found"),
 
     // --- CURRENCY ---
     UNSUPPORTED_CURRENCY(HttpStatus.BAD_REQUEST, "CURRENCY_001", "Unsupported currency"),
